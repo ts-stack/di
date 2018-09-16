@@ -6,7 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-export {ngContentDef} from './ng_content';
 export {moduleDef, moduleProvideDef} from './ng_module';
 export {pureArrayDef, pureObjectDef, purePipeDef} from './pure_expression';
 export {queryDef} from './query';
