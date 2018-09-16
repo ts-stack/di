@@ -6,10 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {looseIdentical, stringify} from '../util';
+import {stringify} from '../util';
 
-import {expressionChangedAfterItHasBeenCheckedError} from './errors';
-import {BindingFlags, Definition, DefinitionFactory, DepDef, DepFlags, NodeFlags, QueryValueType, ViewFlags, ViewState} from './types';
+import {Definition, DefinitionFactory, DepDef, DepFlags, QueryValueType} from './types';
 
 export const NOOP: any = () => {};
 
