@@ -6,9 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {ElementRef} from '../linker/element_ref';
-import {QueryList} from '../linker/query_list';
-
 import {NodeDef, NodeFlags, QueryBindingDef, QueryBindingType, QueryDef, QueryValueType, ViewData, asElementData, asProviderData, asQueryList} from './types';
 import {declaredViewContainer, filterQueryId, isEmbeddedView} from './util';
 
@@ -47,10 +44,6 @@ export function queryDef(
     query: {id, filterId: filterQueryId(id), bindings: bindingDefs},
     ngContent: null
   };
-}
-
-export function createQuery(): QueryList<any> {
-  return new QueryList();
 }
 
 export function dirtyParentQueries(view: ViewData) {
@@ -171,23 +164,4 @@ function calcQueryValues(
     }
   }
   return values;
-}
-
-export function getQueryValue(
-    view: ViewData, nodeDef: NodeDef, queryValueType: QueryValueType): any {
-  if (queryValueType != null) {
-    // a match
-    switch (queryValueType) {
-      case QueryValueType.RenderElement:
-        return asElementData(view, nodeDef.nodeIndex).renderElement;
-      case QueryValueType.ElementRef:
-        return new ElementRef(asElementData(view, nodeDef.nodeIndex).renderElement);
-      case QueryValueType.TemplateRef:
-        return asElementData(view, nodeDef.nodeIndex).template;
-      case QueryValueType.ViewContainerRef:
-        return asElementData(view, nodeDef.nodeIndex).viewContainer;
-      case QueryValueType.Provider:
-        return asProviderData(view, nodeDef.nodeIndex).instance;
-    }
-  }
 }
