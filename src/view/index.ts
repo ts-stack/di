@@ -8,7 +8,6 @@
 
 export {moduleDef, moduleProvideDef} from './ng_module';
 export {EMPTY_ARRAY, EMPTY_MAP, elementEventFullName, inlineInterpolate, interpolate, tokenKey} from './util';
-export {viewDef} from './view';
 export {attachEmbeddedView, detachEmbeddedView, moveEmbeddedView} from './view_attach';
 
 export * from './types';
