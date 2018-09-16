@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-export {anchorDef, elementDef} from './element';
+export {anchorDef} from './element';
 export {clearProviderOverrides, createNgModuleFactory, overrideProvider} from './entrypoint';
 export {ngContentDef} from './ng_content';
 export {moduleDef, moduleProvideDef} from './ng_module';
