@@ -13,7 +13,7 @@ export {moduleDef, moduleProvideDef} from './ng_module';
 export {directiveDef, pipeDef, providerDef} from './provider';
 export {pureArrayDef, pureObjectDef, purePipeDef} from './pure_expression';
 export {queryDef} from './query';
-export {ViewRef_, createComponentFactory, getComponentViewDefinitionFactory, nodeValue} from './refs';
+export {nodeValue} from './refs';
 export {initServicesIfNeeded} from './services';
 export {textDef} from './text';
 export {EMPTY_ARRAY, EMPTY_MAP, createRendererType2, elementEventFullName, inlineInterpolate, interpolate, rootRenderNodes, tokenKey, unwrapValue} from './util';
