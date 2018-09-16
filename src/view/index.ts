@@ -7,7 +7,6 @@
  */
 
 export {moduleDef, moduleProvideDef} from './ng_module';
-export {pureArrayDef, pureObjectDef, purePipeDef} from './pure_expression';
 export {queryDef} from './query';
 export {nodeValue} from './refs';
 export {textDef} from './text';
