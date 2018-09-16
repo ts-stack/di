@@ -7,7 +7,6 @@
  */
 
 export {moduleDef, moduleProvideDef} from './ng_module';
-export {queryDef} from './query';
 export {nodeValue} from './refs';
 export {textDef} from './text';
 export {EMPTY_ARRAY, EMPTY_MAP, elementEventFullName, inlineInterpolate, interpolate, tokenKey} from './util';
