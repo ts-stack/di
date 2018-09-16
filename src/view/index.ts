@@ -7,7 +7,6 @@
  */
 
 export {moduleDef, moduleProvideDef} from './ng_module';
-export {textDef} from './text';
 export {EMPTY_ARRAY, EMPTY_MAP, elementEventFullName, inlineInterpolate, interpolate, tokenKey} from './util';
 export {viewDef} from './view';
 export {attachEmbeddedView, detachEmbeddedView, moveEmbeddedView} from './view_attach';
