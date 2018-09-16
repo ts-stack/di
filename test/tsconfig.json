@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "commonjs",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "stripInternal": true,
+    "declaration": true,
+    "outDir": "../dist-test",
+    "lib": ["es2018"]
+  },
+  "files": [
+    "../src/di.ts",
+    "./forward_ref_spec.ts",
+    "./injector_spec.ts",
+    "./reflective_injector_spec.ts",
+    "./reflective_key_spec.ts"
+  ],
+  "angularCompilerOptions": {
+    "skipTemplateCodegen": true
+  }
+}
