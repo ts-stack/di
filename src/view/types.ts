@@ -6,10 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {Injector} from '../di';
-import {ErrorHandler} from '../error_handler';
-import {Type} from '../type';
-
 // -------------------------------------
 // Defs
 // -------------------------------------
