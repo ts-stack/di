@@ -19,7 +19,7 @@ import {
   ReflectiveKey,
   Self,
   forwardRef,
-} from '../src/di';
+} from '../src';
 import { ReflectiveInjector_ } from '../src/di/reflective_injector';
 import { ResolvedReflectiveProvider_ } from '../src/di/reflective_provider';
 import { getOriginalError } from '../src/errors';

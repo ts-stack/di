@@ -11,7 +11,7 @@
     "lib": ["es2018"]
   },
   "files": [
-    "../src/di.ts",
+    "../src/index.ts",
     "./forward_ref_spec.ts",
     "./injector_spec.ts",
     "./reflective_injector_spec.ts",

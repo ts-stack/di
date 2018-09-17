@@ -7,7 +7,7 @@
  */
 
 import { Type } from '../src/type';
-import { forwardRef, resolveForwardRef } from '../src/di';
+import { forwardRef, resolveForwardRef } from '../src';
 
 describe('forwardRef', function() {
   it('should wrap and unwrap the reference', () => {
