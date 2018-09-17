@@ -7,8 +7,7 @@
     "experimentalDecorators": true,
     "stripInternal": true,
     "declaration": true,
-    "outDir": "../dist-test",
-    "lib": ["es2018"]
+    "outDir": "../dist-test"
   },
   "files": [
     "../src/index.ts",
