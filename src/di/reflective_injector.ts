@@ -12,6 +12,8 @@ import {Provider} from './provider';
 import {cyclicDependencyError, instantiationError, noProviderError, outOfBoundsError} from './reflective_errors';
 import {ReflectiveKey} from './reflective_key';
 import {ReflectiveDependency, ResolvedReflectiveFactory, ResolvedReflectiveProvider, resolveReflectiveProviders} from './reflective_provider';
+import { InjectionToken } from './injection_token';
+import { Type } from '../type';
 
 // Threshold for the dynamic version
 const UNDEFINED = new Object();

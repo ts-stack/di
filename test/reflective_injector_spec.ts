@@ -108,14 +108,14 @@ describe(`injector`, () => {
 
   it('should instantiate a class without dependencies', () => {
     const injector = createInjector([Engine]);
-    const engine = injector.get(Engine);
+    const engine: Engine = injector.get(Engine);
 
     expect(engine).toBeAnInstanceOf(Engine);
   });
 
   it('should resolve dependencies based on type information', () => {
     const injector = createInjector([Engine, Car]);
-    const car = injector.get(Car);
+    const car: Car = injector.get(Car);
 
     expect(car).toBeAnInstanceOf(Car);
     expect(car.engine).toBeAnInstanceOf(Engine);
@@ -123,7 +123,7 @@ describe(`injector`, () => {
 
   it('should resolve dependencies based on @Inject annotation', () => {
     const injector = createInjector([TurboEngine, Engine, CarWithInject]);
-    const car = injector.get(CarWithInject);
+    const car: CarWithInject = injector.get(CarWithInject);
 
     expect(car).toBeAnInstanceOf(CarWithInject);
     expect(car.engine).toBeAnInstanceOf(TurboEngine);
@@ -148,8 +148,8 @@ describe(`injector`, () => {
   it('should cache instances', () => {
     const injector = createInjector([Engine]);
 
-    const e1 = injector.get(Engine);
-    const e2 = injector.get(Engine);
+    const e1: Engine = injector.get(Engine);
+    const e2: Engine = injector.get(Engine);
 
     expect(e1).toBe(e2);
   });
@@ -157,7 +157,7 @@ describe(`injector`, () => {
   it('should provide to a value', () => {
     const injector = createInjector([{ provide: Engine, useValue: 'fake engine' }]);
 
-    const engine = injector.get(Engine);
+    const engine: string = injector.get(Engine);
     expect(engine).toEqual('fake engine');
   });
 
@@ -169,7 +169,7 @@ describe(`injector`, () => {
       { provide: Engine, useFactory: (v: string) => v, deps: [[TOKEN]] },
     ]);
 
-    const engine = injector.get(Engine);
+    const engine: string = injector.get(Engine);
     expect(engine).toEqual('by token');
   });
 
@@ -179,14 +179,14 @@ describe(`injector`, () => {
     const injector =
       createInjector([Engine, { provide: Car, useFactory: sportsCarFactory, deps: [Engine] }]);
 
-    const car = injector.get(Car);
+    const car: SportsCar = injector.get(Car);
     expect(car).toBeAnInstanceOf(SportsCar);
     expect(car.engine).toBeAnInstanceOf(Engine);
   });
 
   it('should supporting provider to null', () => {
     const injector = createInjector([{ provide: Engine, useValue: null }]);
-    const engine = injector.get(Engine);
+    const engine: null = injector.get(Engine);
     expect(engine).toBeNull();
   });
 
@@ -195,8 +195,8 @@ describe(`injector`, () => {
       Engine, { provide: SportsCar, useClass: SportsCar }, { provide: Car, useExisting: SportsCar }
     ]);
 
-    const car = injector.get(Car);
-    const sportsCar = injector.get(SportsCar);
+    const car: SportsCar = injector.get(Car);
+    const sportsCar: SportsCar = injector.get(SportsCar);
     expect(car).toBeAnInstanceOf(SportsCar);
     expect(car).toBe(sportsCar);
   });
@@ -207,7 +207,7 @@ describe(`injector`, () => {
       { provide: Car, useClass: CarWithOptionalEngine, multi: true }
     ]);
 
-    const cars = injector.get(Car);
+    const cars: Car[] = injector.get(Car);
     expect(cars.length).toEqual(2);
     expect(cars[0]).toBeAnInstanceOf(SportsCar);
     expect(cars[1]).toBeAnInstanceOf(CarWithOptionalEngine);
@@ -217,7 +217,7 @@ describe(`injector`, () => {
     const injector =
       createInjector([Engine, SportsCar, { provide: Car, useExisting: SportsCar, multi: true }]);
 
-    const cars = injector.get(Car);
+    const cars: Car[] = injector.get(Car);
     expect(cars.length).toEqual(1);
     expect(cars[0]).toBe(injector.get(SportsCar));
   });
@@ -240,7 +240,7 @@ describe(`injector`, () => {
     const injector = createInjector(
       [Engine, { provide: Car, useFactory: (e: Engine) => new SportsCar(e), deps: [Engine] }]);
 
-    const car = injector.get(Car);
+    const car: SportsCar = injector.get(Car);
     expect(car).toBeAnInstanceOf(SportsCar);
     expect(car.engine).toBeAnInstanceOf(Engine);
   });
@@ -248,14 +248,14 @@ describe(`injector`, () => {
   it('should support optional dependencies', () => {
     const injector = createInjector([CarWithOptionalEngine]);
 
-    const car = injector.get(CarWithOptionalEngine);
+    const car: CarWithOptionalEngine = injector.get(CarWithOptionalEngine);
     expect(car.engine).toEqual(null);
   });
 
   it('should flatten passed-in providers', () => {
     const injector = createInjector([[[Engine, Car]]]);
 
-    const car = injector.get(Car);
+    const car: Car = injector.get(Car);
     expect(car).toBeAnInstanceOf(Car);
   });
 
@@ -349,8 +349,8 @@ describe('child', () => {
     const parent = ReflectiveInjector.resolveAndCreate([Engine]);
     const child = parent.resolveAndCreateChild([]);
 
-    const engineFromParent = parent.get(Engine);
-    const engineFromChild = child.get(Engine);
+    const engineFromParent: Engine = parent.get(Engine);
+    const engineFromChild: Engine = child.get(Engine);
 
     expect(engineFromChild).toBe(engineFromParent);
   });
@@ -360,7 +360,7 @@ describe('child', () => {
       const parent = ReflectiveInjector.resolveAndCreate([Car, Engine]);
       const child = parent.resolveAndCreateChild([{ provide: Engine, useClass: TurboEngine }]);
 
-      const carFromChild = child.get(Car);
+      const carFromChild: Car = child.get(Car);
       expect(carFromChild.engine).toBeAnInstanceOf(Engine);
     });
 
@@ -368,8 +368,8 @@ describe('child', () => {
     const parent = ReflectiveInjector.resolveAndCreate([Engine]);
     const child = parent.resolveAndCreateChild([{ provide: Engine, useClass: TurboEngine }]);
 
-    const engineFromParent = parent.get(Engine);
-    const engineFromChild = child.get(Engine);
+    const engineFromParent: TurboEngine = parent.get(Engine);
+    const engineFromChild: TurboEngine = child.get(Engine);
 
     expect(engineFromParent).not.toBe(engineFromChild);
     expect(engineFromChild).toBeAnInstanceOf(TurboEngine);
@@ -384,10 +384,10 @@ describe('child', () => {
 
 describe('resolveAndInstantiate', () => {
   it('should instantiate an object in the context of the injector', () => {
-    const inj = ReflectiveInjector.resolveAndCreate([Engine]);
-    const car = inj.resolveAndInstantiate(Car);
+    const injector = ReflectiveInjector.resolveAndCreate([Engine]);
+    const car: Car = injector.resolveAndInstantiate(Car);
     expect(car).toBeAnInstanceOf(Car);
-    expect(car.engine).toBe(inj.get(Engine));
+    expect(car.engine).toBe(injector.get(Engine));
   });
 
   it('should not store the instantiated object in the injector', () => {
