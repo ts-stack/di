@@ -1,6 +1,6 @@
 {
   "name": "node-ts-di",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-beta.1",
   "main": "dist/index",
   "typings": "dist/index",
   "repository": "https://github.com/KostyaTretyak/node-ts-di",

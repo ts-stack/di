@@ -23,58 +23,32 @@ import {
 import { ReflectiveInjector_ } from '../src/di/reflective_injector';
 import { ResolvedReflectiveProvider_ } from '../src/di/reflective_provider';
 import { getOriginalError } from '../src/errors';
+import { expect } from './matchers';
+import { stringify } from '../src/util';
 
-export function isPresent(obj: any): boolean {
-  return obj != null;
-}
-
-export function stringify(token: any): string {
-  if (typeof token === 'string') {
-    return token;
-  }
-
-  if (token == null) {
-    return '' + token;
-  }
-
-  if (token.overriddenName) {
-    return `${token.overriddenName}`;
-  }
-
-  if (token.name) {
-    return `${token.name}`;
-  }
-
-  const res = token.toString();
-  const newLineIndex = res.indexOf('\n');
-  return newLineIndex === -1 ? res : res.substring(0, newLineIndex);
-}
-
-class Engine {}
+class Engine { }
 
 class BrokenEngine {
-  constructor() {
-    throw new Error('Broken Engine');
-  }
+  constructor() { throw new Error('Broken Engine'); }
 }
 
-class DashboardSoftware {}
+class DashboardSoftware { }
 
 @Injectable()
 class Dashboard {
-  constructor(software: DashboardSoftware) {}
+  constructor(software: DashboardSoftware) { }
 }
 
-class TurboEngine extends Engine {}
+class TurboEngine extends Engine { }
 
 @Injectable()
 class Car {
-  constructor(public engine: Engine) {}
+  constructor(public engine: Engine) { }
 }
 
 @Injectable()
 class CarWithOptionalEngine {
-  constructor(@Optional() public engine: Engine) {}
+  constructor(@Optional() public engine: Engine) { }
 }
 
 @Injectable()
@@ -88,23 +62,24 @@ class CarWithDashboard {
 }
 
 @Injectable()
-class SportsCar extends Car {}
+class SportsCar extends Car {
+}
 
 @Injectable()
 class CarWithInject {
-  constructor(@Inject(TurboEngine) public engine: Engine) {}
+  constructor(@Inject(TurboEngine) public engine: Engine) { }
 }
 
 @Injectable()
 class CyclicEngine {
-  constructor(car: Car) {}
+  constructor(car: Car) { }
 }
 
 class NoAnnotations {
-  constructor(secretDependency: any) {}
+  constructor(secretDependency: any) { }
 }
 
-function factoryFn(a: any) {}
+function factoryFn(a: any) { }
 
 const dynamicProviders = [
   { provide: 'provider0', useValue: 1 },
@@ -120,9 +95,9 @@ const dynamicProviders = [
   { provide: 'provider10', useValue: 1 },
 ];
 
-function createInjector(providers: Provider[], parent: ReflectiveInjector = null): ReflectiveInjector_ {
+function createInjector(providers: Provider[], parent?: ReflectiveInjector | null): ReflectiveInjector_ {
   const resolvedProviders = ReflectiveInjector.resolve(providers.concat(dynamicProviders));
-  if (isPresent(parent)) {
+  if (parent != null) {
     return <ReflectiveInjector_>parent.createChildFromResolved(resolvedProviders);
   } else {
     return <ReflectiveInjector_>ReflectiveInjector.fromResolvedProviders(resolvedProviders);
@@ -130,43 +105,44 @@ function createInjector(providers: Provider[], parent: ReflectiveInjector = null
 }
 
 describe(`injector`, () => {
+
   it('should instantiate a class without dependencies', () => {
     const injector = createInjector([Engine]);
     const engine = injector.get(Engine);
 
-    expect(engine instanceof Engine).toBeTruthy();
+    expect(engine).toBeAnInstanceOf(Engine);
   });
 
   it('should resolve dependencies based on type information', () => {
     const injector = createInjector([Engine, Car]);
     const car = injector.get(Car);
 
-    expect(car instanceof Car).toBeTruthy();
-    expect(car.engine instanceof Engine).toBeTruthy();
+    expect(car).toBeAnInstanceOf(Car);
+    expect(car.engine).toBeAnInstanceOf(Engine);
   });
 
   it('should resolve dependencies based on @Inject annotation', () => {
     const injector = createInjector([TurboEngine, Engine, CarWithInject]);
     const car = injector.get(CarWithInject);
 
-    expect(car instanceof CarWithInject).toBeTruthy();
-    expect(car.engine instanceof TurboEngine).toBeTruthy();
+    expect(car).toBeAnInstanceOf(CarWithInject);
+    expect(car.engine).toBeAnInstanceOf(TurboEngine);
   });
 
   it('should throw when no type and not @Inject (class case)', () => {
-    expect(() => createInjector([NoAnnotations])).toThrowError(
-      "Cannot resolve all parameters for 'NoAnnotations'(?). " +
+    expect(() => createInjector([NoAnnotations]))
+      .toThrowError(
+        'Cannot resolve all parameters for \'NoAnnotations\'(?). ' +
         'Make sure that all the parameters are decorated with Inject or have valid type annotations ' +
-        "and that 'NoAnnotations' is decorated with Injectable."
-    );
+        'and that \'NoAnnotations\' is decorated with Injectable.');
   });
 
   it('should throw when no type and not @Inject (factory case)', () => {
-    expect(() => createInjector([{ provide: 'someToken', useFactory: factoryFn }])).toThrowError(
-      "Cannot resolve all parameters for 'factoryFn'(?). " +
+    expect(() => createInjector([{ provide: 'someToken', useFactory: factoryFn }]))
+      .toThrowError(
+        'Cannot resolve all parameters for \'factoryFn\'(?). ' +
         'Make sure that all the parameters are decorated with Inject or have valid type annotations ' +
-        "and that 'factoryFn' is decorated with Injectable."
-    );
+        'and that \'factoryFn\' is decorated with Injectable.');
   });
 
   it('should cache instances', () => {
@@ -198,15 +174,14 @@ describe(`injector`, () => {
   });
 
   it('should provide to a factory', () => {
-    function sportsCarFactory(e: any) {
-      return new SportsCar(e);
-    }
+    function sportsCarFactory(e: any) { return new SportsCar(e); }
 
-    const injector = createInjector([Engine, { provide: Car, useFactory: sportsCarFactory, deps: [Engine] }]);
+    const injector =
+      createInjector([Engine, { provide: Car, useFactory: sportsCarFactory, deps: [Engine] }]);
 
     const car = injector.get(Car);
-    expect(car instanceof SportsCar).toBeTruthy();
-    expect(car.engine instanceof Engine).toBeTruthy();
+    expect(car).toBeAnInstanceOf(SportsCar);
+    expect(car.engine).toBeAnInstanceOf(Engine);
   });
 
   it('should supporting provider to null', () => {
@@ -216,29 +191,31 @@ describe(`injector`, () => {
   });
 
   it('should provide to an alias', () => {
-    const injector = createInjector([Engine, { provide: SportsCar, useClass: SportsCar }, { provide: Car, useExisting: SportsCar }]);
+    const injector = createInjector([
+      Engine, { provide: SportsCar, useClass: SportsCar }, { provide: Car, useExisting: SportsCar }
+    ]);
 
     const car = injector.get(Car);
     const sportsCar = injector.get(SportsCar);
-    expect(car instanceof SportsCar).toBeTruthy();
+    expect(car).toBeAnInstanceOf(SportsCar);
     expect(car).toBe(sportsCar);
   });
 
   it('should support multiProviders', () => {
     const injector = createInjector([
-      Engine,
-      { provide: Car, useClass: SportsCar, multi: true },
-      { provide: Car, useClass: CarWithOptionalEngine, multi: true },
+      Engine, { provide: Car, useClass: SportsCar, multi: true },
+      { provide: Car, useClass: CarWithOptionalEngine, multi: true }
     ]);
 
     const cars = injector.get(Car);
     expect(cars.length).toEqual(2);
-    expect(cars[0] instanceof SportsCar).toBeTruthy();
-    expect(cars[1] instanceof CarWithOptionalEngine).toBeTruthy();
+    expect(cars[0]).toBeAnInstanceOf(SportsCar);
+    expect(cars[1]).toBeAnInstanceOf(CarWithOptionalEngine);
   });
 
   it('should support multiProviders that are created using useExisting', () => {
-    const injector = createInjector([Engine, SportsCar, { provide: Car, useExisting: SportsCar, multi: true }]);
+    const injector =
+      createInjector([Engine, SportsCar, { provide: Car, useExisting: SportsCar, multi: true }]);
 
     const cars = injector.get(Car);
     expect(cars.length).toEqual(1);
@@ -254,17 +231,18 @@ describe(`injector`, () => {
   it('should handle forwardRef in useExisting', () => {
     const injector = createInjector([
       { provide: 'originalEngine', useClass: forwardRef(() => Engine) },
-      { provide: 'aliasedEngine', useExisting: <any>forwardRef(() => 'originalEngine') },
+      { provide: 'aliasedEngine', useExisting: <any>forwardRef(() => 'originalEngine') }
     ]);
-    expect(injector.get('aliasedEngine') instanceof Engine).toBeTruthy();
+    expect(injector.get('aliasedEngine')).toBeAnInstanceOf(Engine);
   });
 
   it('should support overriding factory dependencies', () => {
-    const injector = createInjector([Engine, { provide: Car, useFactory: (e: Engine) => new SportsCar(e), deps: [Engine] }]);
+    const injector = createInjector(
+      [Engine, { provide: Car, useFactory: (e: Engine) => new SportsCar(e), deps: [Engine] }]);
 
     const car = injector.get(Car);
-    expect(car instanceof SportsCar).toBeTruthy();
-    expect(car.engine instanceof Engine).toBeTruthy();
+    expect(car).toBeAnInstanceOf(SportsCar);
+    expect(car.engine).toBeAnInstanceOf(Engine);
   });
 
   it('should support optional dependencies', () => {
@@ -278,13 +256,14 @@ describe(`injector`, () => {
     const injector = createInjector([[[Engine, Car]]]);
 
     const car = injector.get(Car);
-    expect(car instanceof Car).toBeTruthy();
+    expect(car).toBeAnInstanceOf(Car);
   });
 
   it('should use the last provider when there are multiple providers for same token', () => {
-    const injector = createInjector([{ provide: Engine, useClass: Engine }, { provide: Engine, useClass: TurboEngine }]);
+    const injector = createInjector(
+      [{ provide: Engine, useClass: Engine }, { provide: Engine, useClass: TurboEngine }]);
 
-    expect(injector.get(Engine) instanceof TurboEngine).toBeTruthy();
+    expect(injector.get(Engine)).toBeAnInstanceOf(TurboEngine);
   });
 
   it('should use non-type tokens', () => {
@@ -294,9 +273,9 @@ describe(`injector`, () => {
   });
 
   it('should throw when given invalid providers', () => {
-    expect(() => createInjector(<any>['blah'])).toThrowError(
-      'Invalid provider - only instances of Provider and Type are allowed, got: blah'
-    );
+    expect(() => createInjector(<any>['blah']))
+      .toThrowError(
+        'Invalid provider - only instances of Provider and Type are allowed, got: blah');
   });
 
   it('should provide itself', () => {
@@ -313,28 +292,30 @@ describe(`injector`, () => {
 
   it('should show the full path when no provider', () => {
     const injector = createInjector([CarWithDashboard, Engine, Dashboard]);
-    expect(() => injector.get(CarWithDashboard)).toThrowError(
-      `No provider for DashboardSoftware! (${stringify(CarWithDashboard)} -> ${stringify(Dashboard)} -> DashboardSoftware)`
-    );
+    expect(() => injector.get(CarWithDashboard))
+      .toThrowError(
+        `No provider for DashboardSoftware! (${stringify(CarWithDashboard)} -> ${stringify(Dashboard)} -> DashboardSoftware)`);
   });
 
   it('should throw when trying to instantiate a cyclic dependency', () => {
     const injector = createInjector([Car, { provide: Engine, useClass: CyclicEngine }]);
 
-    expect(() => injector.get(Car)).toThrowError(
-      `Cannot instantiate cyclic dependency! (${stringify(Car)} -> ${stringify(Engine)} -> ${stringify(Car)})`
-    );
+    expect(() => injector.get(Car))
+      .toThrowError(
+        `Cannot instantiate cyclic dependency! (${stringify(Car)} -> ${stringify(Engine)} -> ${stringify(Car)})`);
   });
 
   it('should show the full path when error happens in a constructor', () => {
-    const providers = ReflectiveInjector.resolve([Car, { provide: Engine, useClass: BrokenEngine }]);
+    const providers =
+      ReflectiveInjector.resolve([Car, { provide: Engine, useClass: BrokenEngine }]);
     const injector = new ReflectiveInjector_(providers);
 
     try {
       injector.get(Car);
       throw 'Must throw';
     } catch (e) {
-      expect(e.message).toContain(`Error during instantiation of Engine! (${stringify(Car)} -> Engine)`);
+      expect(e.message).toContain(
+        `Error during instantiation of Engine! (${stringify(Car)} -> Engine)`);
       expect(getOriginalError(e) instanceof Error).toBeTruthy();
       expect(e.keys[0].token).toEqual(Engine);
     }
@@ -343,20 +324,25 @@ describe(`injector`, () => {
   it('should instantiate an object after a failed attempt', () => {
     let isBroken = true;
 
-    const injector = createInjector([Car, { provide: Engine, useFactory: () => (isBroken ? new BrokenEngine() : new Engine()) }]);
+    const injector = createInjector([
+      Car, { provide: Engine, useFactory: (() => isBroken ? new BrokenEngine() : new Engine()) }
+    ]);
 
-    expect(() => injector.get(Car)).toThrowError('Broken Engine: Error during instantiation of Engine! (Car -> Engine).');
+    expect(() => injector.get(Car))
+      .toThrowError('Broken Engine: Error during instantiation of Engine! (Car -> Engine).');
 
     isBroken = false;
 
-    expect(injector.get(Car) instanceof Car).toBeTruthy();
+    expect(injector.get(Car)).toBeAnInstanceOf(Car);
   });
 
   it('should support null values', () => {
     const injector = createInjector([{ provide: 'null', useValue: null }]);
     expect(injector.get('null')).toBe(null);
   });
+
 });
+
 
 describe('child', () => {
   it('should load instances from parent injector', () => {
@@ -369,13 +355,14 @@ describe('child', () => {
     expect(engineFromChild).toBe(engineFromParent);
   });
 
-  it('should not use the child providers when resolving the dependencies of a parent provider', () => {
-    const parent = ReflectiveInjector.resolveAndCreate([Car, Engine]);
-    const child = parent.resolveAndCreateChild([{ provide: Engine, useClass: TurboEngine }]);
+  it('should not use the child providers when resolving the dependencies of a parent provider',
+    () => {
+      const parent = ReflectiveInjector.resolveAndCreate([Car, Engine]);
+      const child = parent.resolveAndCreateChild([{ provide: Engine, useClass: TurboEngine }]);
 
-    const carFromChild = child.get(Car);
-    expect(carFromChild.engine instanceof Engine).toBeTruthy();
-  });
+      const carFromChild = child.get(Car);
+      expect(carFromChild.engine).toBeAnInstanceOf(Engine);
+    });
 
   it('should create new instance in a child injector', () => {
     const parent = ReflectiveInjector.resolveAndCreate([Engine]);
@@ -385,7 +372,7 @@ describe('child', () => {
     const engineFromChild = child.get(Engine);
 
     expect(engineFromParent).not.toBe(engineFromChild);
-    expect(engineFromChild instanceof TurboEngine).toBeTruthy();
+    expect(engineFromChild).toBeAnInstanceOf(TurboEngine);
   });
 
   it('should give access to parent', () => {
@@ -399,7 +386,7 @@ describe('resolveAndInstantiate', () => {
   it('should instantiate an object in the context of the injector', () => {
     const inj = ReflectiveInjector.resolveAndCreate([Engine]);
     const car = inj.resolveAndInstantiate(Car);
-    expect(car instanceof Car).toBeTruthy();
+    expect(car).toBeAnInstanceOf(Car);
     expect(car.engine).toBe(inj.get(Engine));
   });
 
@@ -414,7 +401,7 @@ describe('instantiate', () => {
   it('should instantiate an object in the context of the injector', () => {
     const inj = ReflectiveInjector.resolveAndCreate([Engine]);
     const car = inj.instantiateResolved(ReflectiveInjector.resolve([Car])[0]);
-    expect(car instanceof Car).toBeTruthy();
+    expect(car).toBeAnInstanceOf(Car);
     expect(car.engine).toBe(inj.get(Engine));
   });
 });
@@ -424,17 +411,19 @@ describe('depedency resolution', () => {
     it('should return a dependency from self', () => {
       const inj = ReflectiveInjector.resolveAndCreate([
         Engine,
-        { provide: Car, useFactory: (e: Engine) => new Car(e), deps: [[Engine, new Self()]] },
+        { provide: Car, useFactory: (e: Engine) => new Car(e), deps: [[Engine, new Self()]] }
       ]);
 
-      expect(inj.get(Car) instanceof Car).toBeTruthy();
+      expect(inj.get(Car)).toBeAnInstanceOf(Car);
     });
 
     it('should throw when not requested provider on self', () => {
       const parent = ReflectiveInjector.resolveAndCreate([Engine]);
-      const child = parent.resolveAndCreateChild([{ provide: Car, useFactory: (e: Engine) => new Car(e), deps: [[Engine, new Self()]] }]);
+      const child = parent.resolveAndCreateChild(
+        [{ provide: Car, useFactory: (e: Engine) => new Car(e), deps: [[Engine, new Self()]] }]);
 
-      expect(() => child.get(Car)).toThrowError(`No provider for Engine! (${stringify(Car)} -> ${stringify(Engine)})`);
+      expect(() => child.get(Car))
+        .toThrowError(`No provider for Engine! (${stringify(Car)} -> ${stringify(Engine)})`);
     });
   });
 
@@ -443,10 +432,10 @@ describe('depedency resolution', () => {
       const parent = ReflectiveInjector.resolveAndCreate([Engine]);
       const child = parent.resolveAndCreateChild([
         { provide: Engine, useClass: TurboEngine },
-        { provide: Car, useFactory: (e: Engine) => new Car(e), deps: [Engine] },
+        { provide: Car, useFactory: (e: Engine) => new Car(e), deps: [Engine] }
       ]);
 
-      expect(child.get(Car).engine instanceof TurboEngine).toBeTruthy();
+      expect(child.get(Car).engine).toBeAnInstanceOf(TurboEngine);
     });
   });
 });
@@ -454,8 +443,8 @@ describe('depedency resolution', () => {
 describe('resolve', () => {
   it('should resolve and flatten', () => {
     const providers = ReflectiveInjector.resolve([Engine, [BrokenEngine]]);
-    providers.forEach(function(b) {
-      if (!b) return; // the result is a sparse array
+    providers.forEach(function (b) {
+      if (!b) return;  // the result is a sparse array
       expect(b instanceof ResolvedReflectiveProvider_).toBe(true);
     });
   });
@@ -463,7 +452,7 @@ describe('resolve', () => {
   it('should support multi providers', () => {
     const provider = ReflectiveInjector.resolve([
       { provide: Engine, useClass: BrokenEngine, multi: true },
-      { provide: Engine, useClass: TurboEngine, multi: true },
+      { provide: Engine, useClass: TurboEngine, multi: true }
     ])[0];
 
     expect(provider.key.token).toBe(Engine);
@@ -471,10 +460,11 @@ describe('resolve', () => {
     expect(provider.resolvedFactories.length).toEqual(2);
   });
 
+
   it('should support providers as hash', () => {
     const provider = ReflectiveInjector.resolve([
       { provide: Engine, useClass: BrokenEngine, multi: true },
-      { provide: Engine, useClass: TurboEngine, multi: true },
+      { provide: Engine, useClass: TurboEngine, multi: true }
     ])[0];
 
     expect(provider.key.token).toBe(Engine);
@@ -483,7 +473,8 @@ describe('resolve', () => {
   });
 
   it('should support multi providers with only one provider', () => {
-    const provider = ReflectiveInjector.resolve([{ provide: Engine, useClass: BrokenEngine, multi: true }])[0];
+    const provider =
+      ReflectiveInjector.resolve([{ provide: Engine, useClass: BrokenEngine, multi: true }])[0];
 
     expect(provider.key.token).toBe(Engine);
     expect(provider.multiProvider).toEqual(true);
@@ -492,23 +483,24 @@ describe('resolve', () => {
 
   it('should throw when mixing multi providers with regular providers', () => {
     expect(() => {
-      ReflectiveInjector.resolve([{ provide: Engine, useClass: BrokenEngine, multi: true }, Engine]);
+      ReflectiveInjector.resolve(
+        [{ provide: Engine, useClass: BrokenEngine, multi: true }, Engine]);
     }).toThrowError(/Cannot mix multi providers and regular providers/);
 
     expect(() => {
-      ReflectiveInjector.resolve([Engine, { provide: Engine, useClass: BrokenEngine, multi: true }]);
+      ReflectiveInjector.resolve(
+        [Engine, { provide: Engine, useClass: BrokenEngine, multi: true }]);
     }).toThrowError(/Cannot mix multi providers and regular providers/);
   });
 
   it('should resolve forward references', () => {
     const providers = ReflectiveInjector.resolve([
       forwardRef(() => Engine),
-      [{ provide: forwardRef(() => BrokenEngine), useClass: forwardRef(() => Engine) }],
-      {
+      [{ provide: forwardRef(() => BrokenEngine), useClass: forwardRef(() => Engine) }], {
         provide: forwardRef(() => String),
         useFactory: () => 'OK',
-        deps: [forwardRef(() => Engine)],
-      },
+        deps: [forwardRef(() => Engine)]
+      }
     ]);
 
     const engineProvider = providers[0];
@@ -517,17 +509,16 @@ describe('resolve', () => {
 
     expect(engineProvider.resolvedFactories[0].factory() instanceof Engine).toBe(true);
     expect(brokenEngineProvider.resolvedFactories[0].factory() instanceof Engine).toBe(true);
-    expect(stringProvider.resolvedFactories[0].dependencies[0].key).toEqual(ReflectiveKey.get(Engine));
+    expect(stringProvider.resolvedFactories[0].dependencies[0].key)
+      .toEqual(ReflectiveKey.get(Engine));
   });
 
   it('should support overriding factory dependencies with dependency annotations', () => {
-    const providers = ReflectiveInjector.resolve([
-      {
-        provide: 'token',
-        useFactory: (e: any /** TODO #9100 */) => 'result',
-        deps: [[new Inject('dep')]],
-      },
-    ]);
+    const providers = ReflectiveInjector.resolve([{
+      provide: 'token',
+      useFactory: (e: any /** TODO #9100 */) => 'result',
+      deps: [[new Inject('dep')]]
+    }]);
 
     const provider = providers[0];
 
@@ -535,18 +526,27 @@ describe('resolve', () => {
   });
 
   it('should allow declaring dependencies with flat arrays', () => {
-    const resolved = ReflectiveInjector.resolve([{ provide: 'token', useFactory: (e: any) => e, deps: [new Inject('dep')] }]);
-    const nestedResolved = ReflectiveInjector.resolve([{ provide: 'token', useFactory: (e: any) => e, deps: [[new Inject('dep')]] }]);
-    expect(resolved[0].resolvedFactories[0].dependencies[0].key.token).toEqual(
-      nestedResolved[0].resolvedFactories[0].dependencies[0].key.token
-    );
+    const resolved = ReflectiveInjector.resolve([{
+      provide: 'token',
+      useFactory: (e: any) => e,
+      deps: [new Inject('dep')]
+    }]);
+
+    const nestedResolved = ReflectiveInjector.resolve([{
+      provide: 'token',
+      useFactory: (e: any) => e,
+      deps: [[new Inject('dep')]]
+    }]);
+
+    expect(resolved[0].resolvedFactories[0].dependencies[0].key.token)
+      .toEqual(nestedResolved[0].resolvedFactories[0].dependencies[0].key.token);
   });
 });
 
 describe('displayName', () => {
   it('should work', () => {
-    expect((<ReflectiveInjector_>ReflectiveInjector.resolveAndCreate([Engine, BrokenEngine])).displayName).toEqual(
-      'ReflectiveInjector(providers: [ "Engine" ,  "BrokenEngine" ])'
-    );
+    expect((<ReflectiveInjector_>ReflectiveInjector.resolveAndCreate([Engine, BrokenEngine]))
+      .displayName)
+      .toEqual('ReflectiveInjector(providers: [ "Engine" ,  "BrokenEngine" ])');
   });
 });
