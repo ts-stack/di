@@ -17,7 +17,7 @@
   },
   "scripts": {
     "prebuild": "npm run lint",
-    "compile": "tsc",
+    "compile": "rimraf dist && tsc",
     "build:test": "rimraf dist-test && tsc --project test",
     "test": "npm run build:test && jasmine",
     "lint": "tslint -p tsconfig.json"
