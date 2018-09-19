@@ -11,33 +11,6 @@ function fake(){ /* unused function to prevent the license merging with comments
 /**
  * Creates a token that can be used in a DI Provider.
  *
-```typescript
-var t = new OpaqueToken("value");
-
-var injector = Injector.resolveAndCreate([
-  {provide: t, useValue: "bindingValue"}
-]);
-
-expect(injector.get(t)).toEqual("bindingValue");
-```
- *
- * Using an `OpaqueToken` is preferable to using strings as tokens because of possible collisions
- * caused by multiple providers using the same string as two different tokens.
- *
- * Using an `OpaqueToken` is preferable to using an `Object` as tokens because it provides better
- * error messages.
- * @deprecated since v4.0.0 because it does not support type information, use `InjectionToken<?>`
- * instead.
- */
-export class OpaqueToken {
-  constructor(protected _desc: string) {}
-
-  toString(): string { return `Token ${this._desc}`; }
-}
-
-/**
- * Creates a token that can be used in a DI Provider.
- *
  * Use an `InjectionToken` whenever the type you are injecting is not reified (does not have a
  * runtime representation) such as when injecting an interface, callable type, array or
  * parametrized type.
@@ -45,23 +18,25 @@ export class OpaqueToken {
  * `InjectionToken` is parameterized on `T` which is the type of object which will be returned by
  * the `Injector`. This provides additional level of type safety.
  *
- * ```
- * interface MyInterface {...}
- * var myInterface = injector.get(new InjectionToken<MyInterface>('SomeToken'));
- * // myInterface is inferred to be MyInterface.
- * ```
+```
+interface MyInterface {...}
+var myInterface = injector.get(new InjectionToken<MyInterface>('SomeToken'));
+// myInterface is inferred to be MyInterface.
+```
  *
  * ### Example
  *
- * {@example core/di/ts/injector_spec.ts region='InjectionToken'}
- *
- * @stable
+```ts
+const BASE_URL = new InjectionToken<string>('BaseUrl');
+const injector =
+    ReflectiveInjector.resolveAndCreate([{provide: BASE_URL, useValue: 'http://localhost'}]);
+const url = injector.get(BASE_URL);
+// here `url` is inferred to be `string` because `BASE_URL` is `InjectionToken<string>`.
+expect(url).toBe('http://localhost');
+```
  */
-export class InjectionToken<T> extends OpaqueToken {
-  // This unused property is needed here so that TS can differentiate InjectionToken from
-  // OpaqueToken since otherwise they would have the same shape and be treated as equivalent.
-  private _differentiate_from_OpaqueToken_structurally: any;
-  constructor(desc: string) { super(desc); }
+export class InjectionToken<T> {
+  constructor(protected desc: string) { }
 
-  toString(): string { return `InjectionToken ${this._desc}`; }
+  toString(): string { return `InjectionToken ${this.desc}`; }
 }
