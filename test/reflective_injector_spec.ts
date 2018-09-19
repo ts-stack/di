@@ -337,11 +337,8 @@ describe(`injector`, () => {
 
   it('should instantiate an object after a failed attempt', () => {
     let isBroken = true;
-
-    const injector = createInjector([
-      Car,
-      { provide: Engine, useFactory: (() => isBroken ? new BrokenEngine() : new Engine()) }
-    ]);
+    const callback = () => isBroken ? new BrokenEngine() : new Engine();
+    const injector = createInjector([Car, { provide: Engine, useFactory: callback }]);
 
     expect(() => injector.get(Car))
       .toThrowError('Broken Engine: Error during instantiation of Engine! (Car -> Engine).');
