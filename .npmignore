@@ -1,0 +1,15 @@
+node_modules
+spec
+*.spec*
+*.tgz
+npm-debug.log
+.gitignore
+tsconfig.json
+.vscode
+.travis.yml
+lib
+test
+dist-test
+dist-examples
+examples-usage
+src

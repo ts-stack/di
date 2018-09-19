@@ -1,11 +1,31 @@
 {
   "name": "node-ts-di",
+  "description": "Dependency injection library for JavaScript and TypeScript",
+  "author": "Костя Третяк <ktretiak.in.ua@gmail.com>",
   "version": "1.0.0-beta.1",
   "main": "dist/index",
   "typings": "dist/index",
-  "repository": "https://github.com/KostyaTretyak/node-ts-di",
-  "author": "Третяк Костя",
+  "directories": {
+    "lib": "src"
+  },
+  "repository": "https://github.com/KostyaTretyak/node-ts-di.git",
+  "homepage": "https://github.com/KostyaTretyak/node-ts-di",
+  "bugs": {
+    "url": "http://github.com/KostyaTretyak/node-ts-di/issues"
+  },
   "license": "MIT",
+  "keywords": [
+    "di",
+    "dependency-injection",
+    "typescript",
+    "angular-di"
+  ],
+  "tags": [
+    "di",
+    "dependency-injection",
+    "typescript",
+    "angular-di"
+  ],
   "devDependencies": {
     "@types/jasmine": "^2.8.8",
     "@types/node": "^10.9.4",
@@ -19,7 +39,6 @@
     "prebuild": "npm run lint",
     "compile": "rimraf dist && tsc",
     "build:test": "rimraf dist-test && tsc --project test",
-    "test": "npm run build:test && jasmine",
-    "lint": "tslint -p tsconfig.json"
+    "test": "npm run build:test && jasmine"
   }
 }
