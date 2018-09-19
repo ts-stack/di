@@ -6,6 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
+function fake(){ /* unused function to prevent the license merging with comments */}
+
 /**
  * @whatItDoes Represents a type that a Component or other object is instances of.
  *

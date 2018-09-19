@@ -6,6 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
+function fake(){ /* unused function to prevent the license merging with comments */}
+
 import {Type} from '../type';
 import {stringify} from '../util';
 
@@ -43,12 +45,7 @@ export function forwardRef(forwardRefFn: ForwardRefFn): Type<any> {
  * Lazily retrieves the reference value from a forwardRef.
  *
  * Acts as the identity function when given a non-forward-ref value.
- *
- * ### Example ([live demo](http://plnkr.co/edit/GU72mJrk1fiodChcmiDR?p=preview))
- *
- * {@example core/di/ts/forward_ref/forward_ref_spec.ts region='resolve_forward_ref'}
- *
- * See: {@link forwardRef}
+ * 
  * @experimental
  */
 export function resolveForwardRef(type: any): any {

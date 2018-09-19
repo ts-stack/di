@@ -6,6 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
+function fake(){ /* unused function to prevent the license merging with comments */}
+
 // TODO(jteplitz602): Load WorkerGlobalScope from lib.webworker.d.ts file #3492
 declare var WorkerGlobalScope: any /** TODO #9100 */;
 // CommonJS / Node have global context exposed as "global" variable.

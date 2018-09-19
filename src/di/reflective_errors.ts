@@ -6,6 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
+function fake(){ /* unused function to prevent the license merging with comments */}
+
 import {wrappedError} from '../error_handler';
 import {ERROR_ORIGINAL_ERROR, getOriginalError} from '../errors';
 import {Type} from '../type';
