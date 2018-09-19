@@ -19,34 +19,6 @@ const __global = typeof global !== 'undefined' && global;
 const _global: {[name: string]: any} = __window || __global || __self;
 export {_global as global};
 
-// When Symbol.iterator doesn't exist, retrieves the key used in es6-shim
-declare const Symbol: any;
-let _symbolIterator: any = null;
-export function getSymbolIterator(): string|symbol {
-  if (!_symbolIterator) {
-    const Symbol = _global['Symbol'];
-    if (Symbol && Symbol.iterator) {
-      _symbolIterator = Symbol.iterator;
-    } else {
-      // es6-shim specific logic
-      const keys = Object.getOwnPropertyNames(Map.prototype);
-      for (let i = 0; i < keys.length; ++i) {
-        const key = keys[i];
-        if (key !== 'entries' && key !== 'size' &&
-            (Map as any).prototype[key] === Map.prototype['entries']) {
-          _symbolIterator = key;
-        }
-      }
-    }
-  }
-  return _symbolIterator;
-}
-
-// JS has NaN !== NaN
-export function looseIdentical(a: any, b: any): boolean {
-  return a === b || typeof a === 'number' && typeof b === 'number' && isNaN(a) && isNaN(b);
-}
-
 export function stringify(token: any): string {
   if (typeof token === 'string') {
     return token;
