@@ -1,5 +1,5 @@
 {
-  "name": "node-ts-di",
+  "name": "ts-di",
   "description": "Dependency injection library for JavaScript and TypeScript",
   "author": "Костя Третяк <ktretiak.in.ua@gmail.com>",
   "version": "1.0.0-beta.1",
@@ -8,10 +8,10 @@
   "directories": {
     "lib": "src"
   },
-  "repository": "https://github.com/KostyaTretyak/node-ts-di.git",
-  "homepage": "https://github.com/KostyaTretyak/node-ts-di",
+  "repository": "https://github.com/KostyaTretyak/ts-di.git",
+  "homepage": "https://github.com/KostyaTretyak/ts-di",
   "bugs": {
-    "url": "http://github.com/KostyaTretyak/node-ts-di/issues"
+    "url": "http://github.com/KostyaTretyak/ts-di/issues"
   },
   "license": "MIT",
   "keywords": [
