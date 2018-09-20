@@ -20,6 +20,18 @@ npm i reflect-metadata
 npm i reflect-metadata
 ```
 
+Then, in `tsconfig.json` file, for `compilerOptions` you need set `experimentalDecorators` and `emitDecoratorMetadata` to `true`:
+
+```json
+{
+  "compilerOptions": {
+    // ...
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}
+```
+
 ## Example usage
 
 ```ts
