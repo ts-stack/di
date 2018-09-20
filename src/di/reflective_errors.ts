@@ -6,15 +6,15 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake(){ /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */}
 
-import {wrappedError} from '../error_handler';
-import {ERROR_ORIGINAL_ERROR} from '../errors';
-import {Type} from '../type';
-import {stringify} from '../util';
+import { wrappedError } from '../error_handler';
+import { ERROR_ORIGINAL_ERROR } from '../errors';
+import { Type } from '../type';
+import { stringify } from '../util';
 
-import {ReflectiveInjector} from './reflective_injector';
-import {ReflectiveKey} from './reflective_key';
+import { ReflectiveInjector } from './reflective_injector';
+import { ReflectiveKey } from './reflective_key';
 
 function findFirstClosedCycle(keys: any[]): any[] {
   const res: any[] = [];

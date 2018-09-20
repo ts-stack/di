@@ -210,7 +210,7 @@ export function constructDependencies(
 function _dependenciesFor(typeOrFunc: any): ReflectiveDependency[] {
   const params = reflector.parameters(typeOrFunc);
 
-  if (!params) return [];
+  if (!params) { return []; }
   if (params.some(p => p == null)) {
     throw noAnnotationError(typeOrFunc, params);
   }

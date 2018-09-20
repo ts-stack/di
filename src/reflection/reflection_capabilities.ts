@@ -6,12 +6,12 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake(){ /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */}
 
-import {Type, isType} from '../type';
-import {global, stringify} from '../util';
-import {PlatformReflectionCapabilities} from './platform_reflection_capabilities';
-import {GetterFn, MethodFn, SetterFn} from './types';
+import { Type, isType } from '../type';
+import { global, stringify } from '../util';
+import { PlatformReflectionCapabilities } from './platform_reflection_capabilities';
+import { GetterFn, MethodFn, SetterFn } from './types';
 
 /**
  * Attention: This regex has to hold even if the code is minified!

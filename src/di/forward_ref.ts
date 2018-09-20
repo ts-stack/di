@@ -6,15 +6,15 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake(){ /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */ }
 
-import {Type} from '../type';
-import {stringify} from '../util';
+import { Type } from '../type';
+import { stringify } from '../util';
 
 
 
 /**
- * An interface that a function passed into `forwardRef()` has to implement.
+ * A type that a function passed into `forwardRef()` has to implement.
  *
  * ### Example
  *
@@ -22,7 +22,7 @@ import {stringify} from '../util';
 const ref = forwardRef(() => Lock);
 ```
  */
-export interface ForwardRefFn { (): any; }
+export type ForwardRefFn = () => any;
 
 /**
  * Allows to refer to references which are not yet defined.
@@ -36,15 +36,15 @@ export interface ForwardRefFn { (): any; }
 ```ts
 class Door {
   lock: Lock;
- 
+
   // Door attempts to inject Lock, despite it not being defined yet.
   // forwardRef makes this possible.
   constructor(@Inject(forwardRef(() => Lock)) lock: Lock) { this.lock = lock; }
 }
- 
+
 // Only at this point Lock is defined.
 class Lock {}
- 
+
 const injector = ReflectiveInjector.resolveAndCreate([Door, Lock]);
 const door = injector.get(Door);
 expect(door instanceof Door).toBeTruthy();
@@ -53,7 +53,7 @@ expect(door.lock instanceof Lock).toBeTruthy();
  */
 export function forwardRef(forwardRefFn: ForwardRefFn): Type<any> {
   (<any>forwardRefFn).__forward_ref__ = forwardRef;
-  (<any>forwardRefFn).toString = function() { return stringify(this()); };
+  (<any>forwardRefFn).toString = function () { return stringify(this()); };
   return (<Type<any>><any>forwardRefFn);
 }
 
@@ -61,9 +61,9 @@ export function forwardRef(forwardRefFn: ForwardRefFn): Type<any> {
  * Lazily retrieves the reference value from a forwardRef.
  *
  * Acts as the identity function when given a non-forward-ref value.
- * 
+ *
  * ### Example:
- * 
+ *
 ```ts
 const ref = forwardRef(() => 'refValue');
 expect(resolveForwardRef(ref)).toEqual('refValue');
@@ -73,7 +73,7 @@ expect(resolveForwardRef('regularValue')).toEqual('regularValue');
  */
 export function resolveForwardRef(type: any): any {
   if (typeof type === 'function' && type.hasOwnProperty('__forward_ref__') &&
-      type.__forward_ref__ === forwardRef) {
+    type.__forward_ref__ === forwardRef) {
     return (<ForwardRefFn>type)();
   } else {
     return type;

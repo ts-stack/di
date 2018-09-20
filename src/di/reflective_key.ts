@@ -6,10 +6,10 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake(){ /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */}
 
-import {stringify} from '../util';
-import {resolveForwardRef} from './forward_ref';
+import { stringify } from '../util';
+import { resolveForwardRef } from './forward_ref';
 
 
 /**
@@ -62,9 +62,10 @@ export class KeyRegistry {
   private _allKeys = new Map<Object, ReflectiveKey>();
 
   get(token: Object): ReflectiveKey {
-    if (token instanceof ReflectiveKey) return token;
+    if (token instanceof ReflectiveKey) { return token; }
 
     if (this._allKeys.has(token)) {
+      // tslint:disable-next-line:no-non-null-assertion
       return this._allKeys.get(token) !;
     }
 

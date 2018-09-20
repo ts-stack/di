@@ -6,13 +6,13 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake(){ /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */}
 
 /**
  * ### Interface Overview
- * 
+ *
 ```ts
-interface Type<T> extends Function { 
+interface Type<T> extends Function {
   new (...args: any[]): T
 }
 ```

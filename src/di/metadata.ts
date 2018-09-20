@@ -6,18 +6,18 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake(){ /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */}
 
-import {makeDecorator, makeParamDecorator} from '../util/decorators';
+import { makeDecorator, makeParamDecorator } from '../util/decorators';
 
 
 /**
  * Type of the Inject decorator / constructor function.
- * 
+ *
  * ### Interface Overview
- * 
+ *
 ```ts
-interface InjectDecorator { 
+interface InjectDecorator {
   (token: any): any
   new (token: any): Inject
 }
@@ -77,15 +77,15 @@ export const Inject: InjectDecorator = makeParamDecorator('Inject', (token: any)
 
 /**
  * ### Interface Overview
- * 
+ *
 ```ts
-interface OptionalDecorator { 
+interface OptionalDecorator {
   (): any
   new (): Optional
 }
 ```
  * ### Description
- * 
+ *
  * Type of the Optional decorator / constructor function.
  * A parameter metadata that marks a dependency as optional.
  * `Injector` provides `null` if the dependency is not found.
@@ -123,21 +123,21 @@ export const Optional: OptionalDecorator = makeParamDecorator('Optional');
 
 /**
  * ### Interface Overview
- * 
+ *
 ```ts
-interface InjectableDecorator { 
+interface InjectableDecorator {
   (): any
   new (): Injectable
 }
 ```
  *
  * ### Description
- * 
+ *
  * Type of the Injectable decorator / constructor function.
  * A marker metadata that marks a class as available to `Injector` for creation.
- * 
+ *
  * ### Example
- * 
+ *
 ```ts
 @Injectable()
 class Car {}
@@ -192,18 +192,18 @@ export const Injectable: InjectableDecorator = <InjectableDecorator>makeDecorato
 /**
  * ### Interface Overview
  ```ts
- interface SelfDecorator { 
+ interface SelfDecorator {
   (): any
   new (): Self
 }
  ```
  * ### Description
- * 
+ *
  * Type of the Self decorator / constructor function.
  * Specifies that an `Injector` should retrieve a dependency only from itself.
- * 
+ *
  * ### Example
- * 
+ *
 ```ts
 @Injectable()
 class Car {
@@ -217,17 +217,17 @@ class Car {
  *
 ```ts
 class Dependency {}
- 
+
 @Injectable()
 class NeedsDependency {
   constructor(@Self() public dependency: Dependency) {}
 }
- 
+
 let inj = ReflectiveInjector.resolveAndCreate([Dependency, NeedsDependency]);
 const nd = inj.get(NeedsDependency);
- 
+
 expect(nd.dependency instanceof Dependency).toBe(true);
- 
+
 inj = ReflectiveInjector.resolveAndCreate([Dependency]);
 const child = inj.resolveAndCreateChild([NeedsDependency]);
 expect(() => child.get(NeedsDependency)).toThrowError();
@@ -251,21 +251,21 @@ export const Self: SelfDecorator = makeParamDecorator('Self');
 
 /**
  * ### Interface Overview
- * 
+ *
 ```ts
-interface SkipSelfDecorator { 
+interface SkipSelfDecorator {
   (): any
   new (): SkipSelf
 }
 ```
  *
  * ### Description
- * 
+ *
  * Type of the SkipSelf decorator / constructor function.
  * Specifies that the dependency resolution should start from the parent injector.
- * 
+ *
  * ### Example
- * 
+ *
 ```ts
 @Injectable()
 class Car {
@@ -279,16 +279,16 @@ class Car {
  *
 ```ts
 class Dependency {}
- 
+
 @Injectable()
 class NeedsDependency {
   constructor(@SkipSelf() public dependency: Dependency) { this.dependency = dependency; }
 }
- 
+
 const parent = ReflectiveInjector.resolveAndCreate([Dependency]);
 const child = parent.resolveAndCreateChild([NeedsDependency]);
 expect(child.get(NeedsDependency).dependency instanceof Dependency).toBe(true);
- 
+
 const inj = ReflectiveInjector.resolveAndCreate([Dependency, NeedsDependency]);
 expect(() => inj.get(NeedsDependency)).toThrowError();
 ```

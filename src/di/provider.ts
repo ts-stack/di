@@ -6,22 +6,22 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake(){ /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */}
 
-import {Type} from '../type';
+import { Type } from '../type';
 
 /**
  * ### Interface Overview
- * 
+ *
 ```ts
-interface TypeProvider extends Type { 
+interface TypeProvider extends Type {
 }
 ```
  *
  * Configures the `Injector` to return an instance of `Type` when `Type` is used  as token.
  *
  * ### Example
- * 
+ *
 ```ts
 @Injectable()
 class MyService {}
@@ -55,18 +55,18 @@ export interface TypeProvider extends Type<any> {}
 
 /**
  * ### Interface Overview
- * 
+ *
 ```ts
-interface ValueProvider { 
+interface ValueProvider {
   provide: any
   useValue: any
   multi?: boolean
 }
 ```
  * Configures the `Injector` to return a value for a token.
- * 
+ *
  * ### How To Use
- * 
+ *
 ```ts
 const provider: ValueProvider = {provide: 'someToken', useValue: 'someValue'};
 ```
@@ -114,9 +114,9 @@ expect(locales).toEqual(['en', 'sk']);
 
 /**
  * ### Interface Overview
- * 
+ *
 ```ts
-interface ClassProvider { 
+interface ClassProvider {
   provide: any
   useClass: Type<any>
   multi?: boolean
@@ -125,7 +125,7 @@ interface ClassProvider {
  * Configures the `Injector` to return an instance of `useClass` for a token.
  *
  * ### Example
- * 
+ *
 ```ts
 @Injectable()
 class MyService {}
@@ -152,19 +152,19 @@ expect(shape instanceof Square).toBe(true);
 ```
  *
  * Note that following two providers are not equal:
- * 
+ *
 ```ts
 class Greeting {
   salutation = 'Hello';
 }
- 
+
 class FormalGreeting extends Greeting {
   salutation = 'Greetings';
 }
- 
+
 const injector = ReflectiveInjector.resolveAndCreate(
     [FormalGreeting, {provide: Greeting, useClass: FormalGreeting}]);
- 
+
 // The injector returns different instances.
 // See: {provide: ?, useExisting: ?} if you want the same instance.
 expect(injector.get(FormalGreeting)).not.toBe(injector.get(Greeting));
@@ -202,9 +202,9 @@ expect(locales).toEqual(['en', 'sk']);
 
 /**
  * ### Interface Overview
- * 
+ *
 ```ts
-interface ExistingProvider { 
+interface ExistingProvider {
   provide: any
   useExisting: any
   multi?: boolean
@@ -213,7 +213,7 @@ interface ExistingProvider {
  * Configures the `Injector` to return a value of another `useExisting` token.
  *
  * ### Example
- * 
+ *
 ```ts
 const provider: ExistingProvider = {provide: 'someToken', useExisting: 'someOtherToken'};
 ```
@@ -226,14 +226,14 @@ const provider: ExistingProvider = {provide: 'someToken', useExisting: 'someOthe
 class Greeting {
   salutation = 'Hello';
 }
- 
+
 class FormalGreeting extends Greeting {
   salutation = 'Greetings';
 }
- 
+
 const injector = ReflectiveInjector.resolveAndCreate(
     [FormalGreeting, {provide: Greeting, useExisting: FormalGreeting}]);
- 
+
 expect(injector.get(Greeting).salutation).toEqual('Greetings');
 expect(injector.get(FormalGreeting).salutation).toEqual('Greetings');
 expect(injector.get(FormalGreeting)).toBe(injector.get(Greeting));
@@ -271,9 +271,9 @@ expect(locales).toEqual(['en', 'sk']);
 
 /**
  * ### Interface Overview
- * 
+ *
 ```ts
-interface FactoryProvider { 
+interface FactoryProvider {
   provide: any
   useFactory: Function
   deps?: any[]
@@ -284,7 +284,7 @@ interface FactoryProvider {
  * function.
  *
  * ### Example
- * 
+ *
 ```ts
 function serviceFactory() { ... }
 
@@ -298,7 +298,7 @@ const provider: FactoryProvider = {provide: 'someToken', useFactory: serviceFact
 ```ts
 const Location = new InjectionToken('location');
 const Hash = new InjectionToken('hash');
- 
+
 const injector = ReflectiveInjector.resolveAndCreate([
   {provide: Location, useValue: 'http://angular.io/#someLocation'}, {
     provide: Hash,
@@ -306,7 +306,7 @@ const injector = ReflectiveInjector.resolveAndCreate([
     deps: [Location]
   }
 ]);
- 
+
 expect(injector.get(Hash)).toEqual('someLocation');
 ```
  *
@@ -365,7 +365,7 @@ expect(locales).toEqual(['en', 'sk']);
 
 /**
  * Describes how the `Injector` should be configured.
- * 
+ *
  * ### How To Use
  * See `TypeProvider`, `ValueProvider`, `ClassProvider`, `ExistingProvider`, `FactoryProvider`.
  *

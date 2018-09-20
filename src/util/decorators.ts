@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake(){ /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */}
 
 import { Type } from '../type';
 import { global, stringify } from '../util';
@@ -265,7 +265,7 @@ export function makeDecorator(
 
   function DecoratorFactory(objOrType: any): (cls: any) => any {
     if (!(Reflect && Reflect.getOwnMetadata)) {
-      throw 'reflect-metadata shim is required when using class decorators';
+      throw new Error('reflect-metadata shim is required when using class decorators');
     }
 
     if (this instanceof DecoratorFactory) {
@@ -285,7 +285,7 @@ export function makeDecorator(
     };
     TypeDecorator.annotations = chainAnnotation;
     TypeDecorator.Class = Class;
-    if (chainFn) chainFn(TypeDecorator);
+    if (chainFn) { chainFn(TypeDecorator); }
     return TypeDecorator;
   }
 
@@ -303,7 +303,9 @@ function makeMetadataCtor(props?: (...args: any[]) => any): any {
     if (props) {
       const values = props(...args);
       for (const propName in values) {
-        this[propName] = values[propName];
+        if (values.hasOwnProperty(propName)) {
+          this[propName] = values[propName];
+        }
       }
     }
   };
@@ -332,6 +334,7 @@ export function makeParamDecorator(
       }
 
       parameters[index] = parameters[index] || [];
+      // tslint:disable-next-line:no-non-null-assertion
       parameters[index]!.push(annotationInstance);
 
       Reflect.defineMetadata('parameters', parameters, cls);

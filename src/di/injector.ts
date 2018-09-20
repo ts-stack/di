@@ -6,12 +6,12 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake(){ /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */}
 
-import {Type} from '../type';
-import {stringify} from '../util';
+import { Type } from '../type';
+import { stringify } from '../util';
 
-import {InjectionToken} from './injection_token';
+import { InjectionToken } from './injection_token';
 
 const _THROW_IF_NOT_FOUND = new Object();
 export const THROW_IF_NOT_FOUND = _THROW_IF_NOT_FOUND;
@@ -36,7 +36,7 @@ class Injector {
 ```
  *
  * ### How To Use
- * 
+ *
 ```ts
 const injector: Injector = ...;
 injector.get(...);

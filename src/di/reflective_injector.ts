@@ -6,14 +6,19 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake(){ /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */}
 
-import {Injector, THROW_IF_NOT_FOUND} from './injector';
-import {Self, SkipSelf} from './metadata';
-import {Provider} from './provider';
-import {cyclicDependencyError, instantiationError, noProviderError, outOfBoundsError} from './reflective_errors';
-import {ReflectiveKey} from './reflective_key';
-import {ReflectiveDependency, ResolvedReflectiveFactory, ResolvedReflectiveProvider, resolveReflectiveProviders} from './reflective_provider';
+import { Injector, THROW_IF_NOT_FOUND } from './injector';
+import { Self, SkipSelf } from './metadata';
+import { Provider } from './provider';
+import { cyclicDependencyError, instantiationError, noProviderError, outOfBoundsError } from './reflective_errors';
+import { ReflectiveKey } from './reflective_key';
+import {
+  ReflectiveDependency,
+  ResolvedReflectiveFactory,
+  ResolvedReflectiveProvider,
+  resolveReflectiveProviders
+} from './reflective_provider';
 
 // Threshold for the dynamic version
 const UNDEFINED = new Object();
@@ -158,7 +163,7 @@ let parent = ReflectiveInjector.resolveAndCreate([]);
 let child = parent.resolveAndCreateChild([]);
 expect(child.parent).toBe(parent);
 ```
-   * 
+   *
    * See [Hierarchical Dependency Injectors](https://v4.angular.io/guide/hierarchical-dependency-injection)
    */
   abstract get parent(): Injector|null;
@@ -185,7 +190,7 @@ expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));
    *
    * This function is slower than the corresponding `createChildFromResolved`
    * because it needs to resolve the passed-in providers first.
-   * 
+   *
    * See [Hierarchical Dependency Injectors](https://v4.angular.io/guide/hierarchical-dependency-injection),
    * `ReflectiveInjector.resolve()` and `ReflectiveInjector.createChildFromResolved()`.
    */
@@ -212,7 +217,7 @@ expect(child.get(ParentProvider) instanceof ParentProvider).toBe(true);
 expect(child.get(ChildProvider) instanceof ChildProvider).toBe(true);
 expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));
 ```
-   * 
+   *
    * See [Hierarchical Dependency Injectors](https://v4.angular.io/guide/hierarchical-dependency-injection)
    */
   abstract createChildFromResolved(providers: ResolvedReflectiveProvider[]): ReflectiveInjector;
@@ -274,7 +279,7 @@ expect(car).not.toBe(injector.instantiateResolved(carProvider));
 
 export class ReflectiveInjector_ implements ReflectiveInjector {
   /** @internal */
-  _constructionCounter: number = 0;
+  _constructionCounter = 0;
   /** @internal */
   public _providers: ResolvedReflectiveProvider[];
   /** @internal */
@@ -439,7 +444,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     while (inj instanceof ReflectiveInjector_) {
       const inj_ = <ReflectiveInjector_>inj;
       const obj = inj_._getObjByKeyId(key.id);
-      if (obj !== UNDEFINED) return obj;
+      if (obj !== UNDEFINED) { return obj; }
       inj = inj_._parent;
     }
     if (inj !== null) {
