@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */ }
 
 import { Type } from '../type';
 import { global, stringify } from '../util';

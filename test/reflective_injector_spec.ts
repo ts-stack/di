@@ -326,7 +326,7 @@ describe(`injector`, () => {
 
     try {
       injector.get(Car);
-      throw 'Must throw';
+      throw new Error('Must throw');
     } catch (e) {
       expect(e.message).toContain(
         `Error during instantiation of Engine! (${stringify(Car)} -> Engine)`);
@@ -459,7 +459,7 @@ describe('resolve', () => {
   it('should resolve and flatten', () => {
     const resolvedProviders = ReflectiveInjector.resolve([Engine, [BrokenEngine]]);
     resolvedProviders.forEach(provider => {
-      if (!provider) return;  // the result is a sparse array
+      if (!provider) { return; }  // the result is a sparse array
       expect(provider instanceof ResolvedReflectiveProvider_).toBe(true);
     });
   });

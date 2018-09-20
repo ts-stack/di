@@ -7,7 +7,7 @@
  */
 
 
-import {global} from '../src/util';
+import { global } from '../src/util';
 
 
 
@@ -15,6 +15,11 @@ import {global} from '../src/util';
  * Jasmine matchers that check Angular specific conditions.
  */
 export interface NgMatchers extends jasmine.Matchers<any> {
+
+  /**
+   * Invert the matchers.
+   */
+  not: NgMatchers;
   /**
    * Expect the value to be a `Promise`.
    *
@@ -50,11 +55,6 @@ export interface NgMatchers extends jasmine.Matchers<any> {
    * {@example testing/ts/matchers.ts region='toContainError'}
    */
   toContainError(expected: any): boolean;
-
-  /**
-   * Invert the matchers.
-   */
-  not: NgMatchers;
 }
 
 const _global = <any>(typeof window === 'undefined' ? global : window);
@@ -73,7 +73,7 @@ export const expect: (actual: any) => NgMatchers = <any>_global.expect;
 // gives us bad error messages in tests.
 // The only way to do this in Jasmine is to monkey patch a method
 // to the object :-(
-(Map as any).prototype['jasmineToString'] = function() {
+(Map as any).prototype['jasmineToString'] = function () {
   const m = this;
   if (!m) {
     return '' + m;
@@ -83,13 +83,13 @@ export const expect: (actual: any) => NgMatchers = <any>_global.expect;
   return `{ ${res.join(',')} }`;
 };
 
-_global.beforeEach(function() {
+_global.beforeEach(function () {
   jasmine.addMatchers({
     // Custom handler for Map as Jasmine does not support it yet
-    toEqual: function(util) {
+    toEqual: function (util) {
       return {
-        compare: function(actual: any, expected: any) {
-          return {pass: util.equals(actual, expected, [compareMap])};
+        compare: function (actual: any, expected: any) {
+          return { pass: util.equals(actual, expected, [compareMap]) };
         }
       };
 
@@ -102,23 +102,24 @@ _global.beforeEach(function() {
           return pass;
         } else {
           // TODO(misko): we should change the return, but jasmine.d.ts is not null safe
-          return undefined !;
+          // tslint:disable-next-line:no-non-null-assertion
+          return undefined!;
         }
       }
     },
 
-    toBePromise: function() {
+    toBePromise: function () {
       return {
-        compare: function(actual: any) {
+        compare: function (actual: any) {
           const pass = typeof actual === 'object' && typeof actual.then === 'function';
-          return {pass: pass, get message() { return 'Expected ' + actual + ' to be a promise'; }};
+          return { pass: pass, get message() { return 'Expected ' + actual + ' to be a promise'; } };
         }
       };
     },
 
-    toBeAnInstanceOf: function() {
+    toBeAnInstanceOf: function () {
       return {
-        compare: function(actual: any, expectedClass: any) {
+        compare: function (actual: any, expectedClass: any) {
           const pass = typeof actual === 'object' && actual instanceof expectedClass;
           return {
             pass: pass,
@@ -130,9 +131,9 @@ _global.beforeEach(function() {
       };
     },
 
-    toContainError: function() {
+    toContainError: function () {
       return {
-        compare: function(actual: any, expectedText: any) {
+        compare: function (actual: any, expectedText: any) {
           const errorMessage = actual.toString();
           return {
             pass: errorMessage.indexOf(expectedText) > -1,
@@ -142,21 +143,21 @@ _global.beforeEach(function() {
       };
     },
 
-    toImplement: function() {
+    toImplement: function () {
       return {
-        compare: function(actualObject: any, expectedInterface: any) {
+        compare: function (actualObject: any, expectedInterface: any) {
           const intProps = Object.keys(expectedInterface.prototype);
 
           const missedMethods: any[] = [];
           intProps.forEach((k) => {
-            if (!actualObject.constructor.prototype[k]) missedMethods.push(k);
+            if (!actualObject.constructor.prototype[k]) { missedMethods.push(k); }
           });
 
           return {
             pass: missedMethods.length == 0,
             get message() {
               return 'Expected ' + actualObject + ' to have the following methods: ' +
-                  missedMethods.join(', ');
+                missedMethods.join(', ');
             }
           };
         }

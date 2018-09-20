@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */ }
 
 // TODO(jteplitz602): Load WorkerGlobalScope from lib.webworker.d.ts file #3492
 declare const WorkerGlobalScope: any /** TODO #9100 */;
@@ -16,10 +16,10 @@ declare const WorkerGlobalScope: any /** TODO #9100 */;
 declare const global: any /** TODO #9100 */;
 const __window = typeof window !== 'undefined' && window;
 const __self = typeof self !== 'undefined' && typeof WorkerGlobalScope !== 'undefined' &&
-    self instanceof WorkerGlobalScope && self;
+  self instanceof WorkerGlobalScope && self;
 const __global = typeof global !== 'undefined' && global;
-const _global: {[name: string]: any} = __window || __global || __self;
-export {_global as global};
+const _global: { [name: string]: any } = __window || __global || __self;
+export { _global as global };
 
 export function stringify(token: any): string {
   if (typeof token === 'string') {

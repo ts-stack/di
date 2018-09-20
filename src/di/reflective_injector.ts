@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */ }
 
 import { Injector, THROW_IF_NOT_FOUND } from './injector';
 import { Self, SkipSelf } from './metadata';
@@ -148,7 +148,7 @@ expect(injector.get(Car) instanceof Car).toBe(true);
 ```
    */
   static fromResolvedProviders(providers: ResolvedReflectiveProvider[], parent?: Injector):
-      ReflectiveInjector {
+    ReflectiveInjector {
     return new ReflectiveInjector_(providers, parent);
   }
 
@@ -166,7 +166,7 @@ expect(child.parent).toBe(parent);
    *
    * See [Hierarchical Dependency Injectors](https://v4.angular.io/guide/hierarchical-dependency-injection)
    */
-  abstract get parent(): Injector|null;
+  abstract get parent(): Injector | null;
 
   /**
    * Resolves an array of providers and creates a child injector from those providers.
@@ -283,7 +283,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   /** @internal */
   public _providers: ResolvedReflectiveProvider[];
   /** @internal */
-  public _parent: Injector|null;
+  public _parent: Injector | null;
 
   keyIds: number[];
   objs: any[];
@@ -309,7 +309,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     return this._getByKey(ReflectiveKey.get(token), null, notFoundValue);
   }
 
-  get parent(): Injector|null { return this._parent; }
+  get parent(): Injector | null { return this._parent; }
 
   resolveAndCreateChild(providers: Provider[]): ReflectiveInjector {
     const ResolvedReflectiveProviders = ReflectiveInjector.resolve(providers);
@@ -338,7 +338,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   }
 
   /** @internal */
-  _new(provider: ResolvedReflectiveProvider): any {
+  _new (provider: ResolvedReflectiveProvider): any {
     if (this._constructionCounter++ > this._getMaxNumberOfObjects()) {
       throw cyclicDependencyError(this, provider.key);
     }
@@ -360,14 +360,14 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   }
 
   private _instantiate(
-      provider: ResolvedReflectiveProvider,
-      ResolvedReflectiveFactory: ResolvedReflectiveFactory): any {
+    provider: ResolvedReflectiveProvider,
+    ResolvedReflectiveFactory: ResolvedReflectiveFactory): any {
     const factory = ResolvedReflectiveFactory.factory;
 
     let deps: any[];
     try {
       deps =
-          ResolvedReflectiveFactory.dependencies.map(dep => this._getByReflectiveDependency(dep));
+        ResolvedReflectiveFactory.dependencies.map(dep => this._getByReflectiveDependency(dep));
     } catch (e) {
       if (e.addKey) {
         e.addKey(this, provider.key);
@@ -389,7 +389,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     return this._getByKey(dep.key, dep.visibility, dep.optional ? null : THROW_IF_NOT_FOUND);
   }
 
-  private _getByKey(key: ReflectiveKey, visibility: Self|SkipSelf|null, notFoundValue: any): any {
+  private _getByKey(key: ReflectiveKey, visibility: Self | SkipSelf | null, notFoundValue: any): any {
     if (key === INJECTOR_KEY) {
       return this;
     }
@@ -432,8 +432,8 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   }
 
   /** @internal */
-  _getByKeyDefault(key: ReflectiveKey, notFoundValue: any, visibility: Self|SkipSelf|null): any {
-    let inj: Injector|null;
+  _getByKeyDefault(key: ReflectiveKey, notFoundValue: any, visibility: Self | SkipSelf | null): any {
+    let inj: Injector | null;
 
     if (visibility instanceof SkipSelf) {
       inj = this._parent;
@@ -456,8 +456,8 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
 
   get displayName(): string {
     const providers =
-        _mapProviders(this, (b: ResolvedReflectiveProvider) => ' "' + b.key.displayName + '" ')
-            .join(', ');
+      _mapProviders(this, (b: ResolvedReflectiveProvider) => ' "' + b.key.displayName + '" ')
+        .join(', ');
     return `ReflectiveInjector(providers: [${providers}])`;
   }
 

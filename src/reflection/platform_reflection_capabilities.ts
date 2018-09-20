@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */ }
 
 import { Type } from '../type';
 import { GetterFn, MethodFn, SetterFn } from './types';
@@ -17,7 +17,7 @@ export interface PlatformReflectionCapabilities {
   hasLifecycleHook(type: any, lcProperty: string): boolean;
   parameters(type: Type<any>): any[][];
   annotations(type: Type<any>): any[];
-  propMetadata(typeOrFunc: Type<any>): {[key: string]: any[]};
+  propMetadata(typeOrFunc: Type<any>): { [key: string]: any[] };
   getter(name: string): GetterFn;
   setter(name: string): SetterFn;
   method(name: string): MethodFn;

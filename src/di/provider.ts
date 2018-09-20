@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */ }
 
 import { Type } from '../type';
 
@@ -51,7 +51,7 @@ const injector = ReflectiveInjector.resolveAndCreate([
 expect(injector.get(Greeting).salutation).toBe('Hello');
 ```
  */
-export interface TypeProvider extends Type<any> {}
+export interface TypeProvider extends Type<any> { }
 
 /**
  * ### Interface Overview
@@ -372,4 +372,4 @@ expect(locales).toEqual(['en', 'sk']);
  * For more details, see the [Dependency Injection Guide](https://v4.angular.io/guide/dependency-injection).
  */
 export type Provider =
-    TypeProvider | ValueProvider | ClassProvider | ExistingProvider | FactoryProvider | any[];
+  TypeProvider | ValueProvider | ClassProvider | ExistingProvider | FactoryProvider | any[];

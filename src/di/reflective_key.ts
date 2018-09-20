@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */ }
 
 import { stringify } from '../util';
 import { resolveForwardRef } from './forward_ref';
@@ -66,7 +66,7 @@ export class KeyRegistry {
 
     if (this._allKeys.has(token)) {
       // tslint:disable-next-line:no-non-null-assertion
-      return this._allKeys.get(token) !;
+      return this._allKeys.get(token)!;
     }
 
     const newKey = new ReflectiveKey(token, ReflectiveKey.numberOfKeys);

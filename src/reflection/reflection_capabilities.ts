@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */}
+function fake() { /* unused function to prevent the license merging with comments */ }
 
 import { Type, isType } from '../type';
 import { global, stringify } from '../util';
@@ -55,7 +55,7 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
     return result;
   }
 
-  private _ownParameters(type: Type<any>, parentCtor: any): any[][]|null {
+  private _ownParameters(type: Type<any>, parentCtor: any): any[][] | null {
     // If we have no decorators, we only have function.length as metadata.
     // In that case, to detect whether a child class declared an own constructor or not,
     // we need to look inside of that constructor to check whether it is
@@ -78,11 +78,11 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
       // Newer tsickle uses a function closure
       // Retain the non-function case for compatibility with older tsickle
       const ctorParameters =
-          typeof tsickleCtorParams === 'function' ? tsickleCtorParams() : tsickleCtorParams;
+        typeof tsickleCtorParams === 'function' ? tsickleCtorParams() : tsickleCtorParams;
       const paramTypes = ctorParameters.map((ctorParam: any) => ctorParam && ctorParam.type);
       const paramAnnotations = ctorParameters.map(
-          (ctorParam: any) =>
-              ctorParam && convertTsickleDecoratorIntoMetadata(ctorParam.decorators));
+        (ctorParam: any) =>
+          ctorParam && convertTsickleDecoratorIntoMetadata(ctorParam.decorators));
       return this._zipTypesAndAnnotations(paramTypes, paramAnnotations);
     }
 
@@ -116,7 +116,7 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
     return parameters || [];
   }
 
-  private _ownAnnotations(typeOrFunc: Type<any>, parentCtor: any): any[]|null {
+  private _ownAnnotations(typeOrFunc: Type<any>, parentCtor: any): any[] | null {
     // Prefer the direct API.
     if ((<any>typeOrFunc).annotations && (<any>typeOrFunc).annotations !== parentCtor.annotations) {
       let annotations = (<any>typeOrFunc).annotations;
@@ -148,10 +148,10 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
     return parentAnnotations.concat(ownAnnotations);
   }
 
-  private _ownPropMetadata(typeOrFunc: any, parentCtor: any): {[key: string]: any[]}|null {
+  private _ownPropMetadata(typeOrFunc: any, parentCtor: any): { [key: string]: any[] } | null {
     // Prefer the direct API.
     if ((<any>typeOrFunc).propMetadata &&
-        (<any>typeOrFunc).propMetadata !== parentCtor.propMetadata) {
+      (<any>typeOrFunc).propMetadata !== parentCtor.propMetadata) {
       let propMetadata = (<any>typeOrFunc).propMetadata;
       if (typeof propMetadata === 'function' && propMetadata.propMetadata) {
         propMetadata = propMetadata.propMetadata;
@@ -161,9 +161,9 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
 
     // API of tsickle for lowering decorators to properties on the class.
     if ((<any>typeOrFunc).propDecorators &&
-        (<any>typeOrFunc).propDecorators !== parentCtor.propDecorators) {
+      (<any>typeOrFunc).propDecorators !== parentCtor.propDecorators) {
       const propDecorators = (<any>typeOrFunc).propDecorators;
-      const propMetadata = <{[key: string]: any[]}>{};
+      const propMetadata = <{ [key: string]: any[] }>{};
       Object.keys(propDecorators).forEach(prop => {
         propMetadata[prop] = convertTsickleDecoratorIntoMetadata(propDecorators[prop]);
       });
@@ -177,12 +177,12 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
     return null;
   }
 
-  propMetadata(typeOrFunc: any): {[key: string]: any[]} {
+  propMetadata(typeOrFunc: any): { [key: string]: any[] } {
     if (!isType(typeOrFunc)) {
       return {};
     }
     const parentCtor = getParentCtor(typeOrFunc);
-    const propMetadata: {[key: string]: any[]} = {};
+    const propMetadata: { [key: string]: any[] } = {};
     if (parentCtor !== Object) {
       const parentPropMetadata = this.propMetadata(parentCtor);
       Object.keys(parentPropMetadata).forEach((propName) => {
