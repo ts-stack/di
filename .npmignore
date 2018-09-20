@@ -13,3 +13,5 @@ dist-test
 dist-examples
 examples-usage
 src
+tslint.json
+yarn.lock
