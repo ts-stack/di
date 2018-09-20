@@ -13,278 +13,297 @@ import {makeDecorator, makeParamDecorator} from '../util/decorators';
 
 /**
  * Type of the Inject decorator / constructor function.
- *
- * @stable
- */
-export interface InjectDecorator {
-  /**
-   * @whatItDoes A parameter decorator that specifies a dependency.
-   * @howToUse
-   * ```
-   * @Injectable()
-   * class Car {
-   *   constructor(@Inject("MyEngine") public engine:Engine) {}
-   * }
-   * ```
-   *
-   * @description
-   * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
-   *
-   * ### Example
-   *
-   * {@example core/di/ts/metadata_spec.ts region='Inject'}
-   *
-   * When `@Inject()` is not present, {@link Injector} will use the type annotation of the
-   * parameter.
-   *
-   * ### Example
-   *
-   * {@example core/di/ts/metadata_spec.ts region='InjectWithoutDecorator'}
-   *
-   * @stable
+ * 
+ * ### Interface Overview
+ * 
+```ts
+interface InjectDecorator { 
+  (token: any): any
+  new (token: any): Inject
+}
+```
+  *
+  * For more details, see the [Dependency Injection Guide](https://v4.angular.io/guide/dependency-injection).
+  *
+  * ### Example
+  *
+```ts
+class Engine {}
+
+@Injectable()
+class Car {
+  constructor(@Inject('MyEngine') public engine: Engine) {}
+}
+
+const injector =
+    ReflectiveInjector.resolveAndCreate([{provide: 'MyEngine', useClass: Engine}, Car]);
+
+expect(injector.get(Car).engine instanceof Engine).toBe(true);
+```
+  *
+  * When `@Inject()` is not present, `Injector` will use the type annotation of the
+  * parameter.
+  *
+  * ### Example
+  *
+```ts
+class Engine {}
+
+@Injectable()
+class Car {
+  constructor(public engine: Engine) {
+  }  // same as constructor(@Inject(Engine) engine:Engine)
+}
+
+const injector = ReflectiveInjector.resolveAndCreate([Engine, Car]);
+expect(injector.get(Car).engine instanceof Engine).toBe(true);
+```
    */
+export interface InjectDecorator {
   (token: any): any;
   new (token: any): Inject;
 }
 
 /**
  * Type of the Inject metadata.
- *
- * @stable
  */
 export interface Inject { token: any; }
 
 /**
  * Inject decorator and metadata.
- *
- * @stable
- * @Annotation
  */
 export const Inject: InjectDecorator = makeParamDecorator('Inject', (token: any) => ({token}));
 
 
 /**
+ * ### Interface Overview
+ * 
+```ts
+interface OptionalDecorator { 
+  (): any
+  new (): Optional
+}
+```
+ * ### Description
+ * 
  * Type of the Optional decorator / constructor function.
+ * A parameter metadata that marks a dependency as optional.
+ * `Injector` provides `null` if the dependency is not found.
  *
- * @stable
+ * For more details, see the [Dependency Injection Guide](https://v4.angular.io/guide/dependency-injection).
+ *
+ * ### Example
+ *
+```ts
+class Engine {}
+
+@Injectable()
+class Car {
+  constructor(@Optional() public engine: Engine) {}
+}
+
+const injector = ReflectiveInjector.resolveAndCreate([Car]);
+expect(injector.get(Car).engine).toBeNull();
+```
  */
 export interface OptionalDecorator {
-  /**
-   * @whatItDoes A parameter metadata that marks a dependency as optional.
-   * {@link Injector} provides `null` if the dependency is not found.
-   * @howToUse
-   * ```
-   * @Injectable()
-   * class Car {
-   *   constructor(@Optional() public engine:Engine) {}
-   * }
-   * ```
-   *
-   * @description
-   * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
-   *
-   * ### Example
-   *
-   * {@example core/di/ts/metadata_spec.ts region='Optional'}
-   *
-   * @stable
-   */
   (): any;
   new (): Optional;
 }
 
 /**
  * Type of the Optional metadata.
- *
- * @stable
  */
 export interface Optional {}
 
 /**
  * Optional decorator and metadata.
- *
- * @stable
- * @Annotation
  */
 export const Optional: OptionalDecorator = makeParamDecorator('Optional');
 
 /**
- * Type of the Injectable decorator / constructor function.
+ * ### Interface Overview
+ * 
+```ts
+interface InjectableDecorator { 
+  (): any
+  new (): Injectable
+}
+```
  *
- * @stable
+ * ### Description
+ * 
+ * Type of the Injectable decorator / constructor function.
+ * A marker metadata that marks a class as available to `Injector` for creation.
+ * 
+ * ### Example
+ * 
+```ts
+@Injectable()
+class Car {}
+```
+ *
+ * For more details, see the [Dependency Injection Guide](https://v4.angular.io/guide/dependency-injection).
+ *
+ * ### Example
+ *
+```ts
+@Injectable()
+class UsefulService {
+}
+
+@Injectable()
+class NeedsService {
+  constructor(public service: UsefulService) {}
+}
+
+const injector = ReflectiveInjector.resolveAndCreate([NeedsService, UsefulService]);
+expect(injector.get(NeedsService).service instanceof UsefulService).toBe(true);
+```
+ *
+ * `Injector` will throw an error when trying to instantiate a class that
+ * does not have `@Injectable` marker, as shown in the example below.
+ *
+```ts
+class UsefulService {}
+
+class NeedsService {
+  constructor(public service: UsefulService) {}
+}
+
+expect(() => ReflectiveInjector.resolveAndCreate([NeedsService, UsefulService])).toThrow();
+```
  */
 export interface InjectableDecorator {
-  /**
-   * @whatItDoes A marker metadata that marks a class as available to {@link Injector} for creation.
-   * @howToUse
-   * ```
-   * @Injectable()
-   * class Car {}
-   * ```
-   *
-   * @description
-   * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
-   *
-   * ### Example
-   *
-   * {@example core/di/ts/metadata_spec.ts region='Injectable'}
-   *
-   * {@link Injector} will throw an error when trying to instantiate a class that
-   * does not have `@Injectable` marker, as shown in the example below.
-   *
-   * {@example core/di/ts/metadata_spec.ts region='InjectableThrows'}
-   *
-   * @stable
-   */
   (): any;
   new (): Injectable;
 }
 
 /**
  * Type of the Injectable metadata.
- *
- * @stable
  */
 export interface Injectable {}
 
 /**
  * Injectable decorator and metadata.
- *
- * @stable
- * @Annotation
  */
 export const Injectable: InjectableDecorator = <InjectableDecorator>makeDecorator('Injectable');
 
 /**
+ * ### Interface Overview
+ ```ts
+ interface SelfDecorator { 
+  (): any
+  new (): Self
+}
+ ```
+ * ### Description
+ * 
  * Type of the Self decorator / constructor function.
+ * Specifies that an `Injector` should retrieve a dependency only from itself.
+ * 
+ * ### Example
+ * 
+```ts
+@Injectable()
+class Car {
+  constructor(@Self() public engine:Engine) {}
+}
+```
  *
- * @stable
+ * For more details, see the [Dependency Injection Guide](https://v4.angular.io/guide/dependency-injection).
+ *
+ * ### Example
+ *
+```ts
+class Dependency {}
+ 
+@Injectable()
+class NeedsDependency {
+  constructor(@Self() public dependency: Dependency) {}
+}
+ 
+let inj = ReflectiveInjector.resolveAndCreate([Dependency, NeedsDependency]);
+const nd = inj.get(NeedsDependency);
+ 
+expect(nd.dependency instanceof Dependency).toBe(true);
+ 
+inj = ReflectiveInjector.resolveAndCreate([Dependency]);
+const child = inj.resolveAndCreateChild([NeedsDependency]);
+expect(() => child.get(NeedsDependency)).toThrowError();
+```
  */
 export interface SelfDecorator {
-  /**
-   * @whatItDoes Specifies that an {@link Injector} should retrieve a dependency only from itself.
-   * @howToUse
-   * ```
-   * @Injectable()
-   * class Car {
-   *   constructor(@Self() public engine:Engine) {}
-   * }
-   * ```
-   *
-   * @description
-   * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
-   *
-   * ### Example
-   *
-   * {@example core/di/ts/metadata_spec.ts region='Self'}
-   *
-   * @stable
-   */
   (): any;
   new (): Self;
 }
 
 /**
  * Type of the Self metadata.
- *
- * @stable
  */
 export interface Self {}
 
 /**
  * Self decorator and metadata.
- *
- * @stable
- * @Annotation
  */
 export const Self: SelfDecorator = makeParamDecorator('Self');
 
 
 /**
- * Type of the SkipSelf decorator / constructor function.
+ * ### Interface Overview
+ * 
+```ts
+interface SkipSelfDecorator { 
+  (): any
+  new (): SkipSelf
+}
+```
  *
- * @stable
+ * ### Description
+ * 
+ * Type of the SkipSelf decorator / constructor function.
+ * Specifies that the dependency resolution should start from the parent injector.
+ * 
+ * ### Example
+ * 
+```ts
+@Injectable()
+class Car {
+  constructor(@SkipSelf() public engine:Engine) {}
+}
+  ```
+ *
+ * For more details, see the [Dependency Injection Guide](https://v4.angular.io/guide/dependency-injection).
+ *
+ * ### Example
+ *
+```ts
+class Dependency {}
+ 
+@Injectable()
+class NeedsDependency {
+  constructor(@SkipSelf() public dependency: Dependency) { this.dependency = dependency; }
+}
+ 
+const parent = ReflectiveInjector.resolveAndCreate([Dependency]);
+const child = parent.resolveAndCreateChild([NeedsDependency]);
+expect(child.get(NeedsDependency).dependency instanceof Dependency).toBe(true);
+ 
+const inj = ReflectiveInjector.resolveAndCreate([Dependency, NeedsDependency]);
+expect(() => inj.get(NeedsDependency)).toThrowError();
+```
  */
 export interface SkipSelfDecorator {
-  /**
-   * @whatItDoes Specifies that the dependency resolution should start from the parent injector.
-   * @howToUse
-   * ```
-   * @Injectable()
-   * class Car {
-   *   constructor(@SkipSelf() public engine:Engine) {}
-   * }
-   * ```
-   *
-   * @description
-   * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
-   *
-   * ### Example
-   *
-   * {@example core/di/ts/metadata_spec.ts region='SkipSelf'}
-   *
-   * @stable
-   */
   (): any;
   new (): SkipSelf;
 }
 
 /**
  * Type of the SkipSelf metadata.
- *
- * @stable
  */
 export interface SkipSelf {}
 
 /**
  * SkipSelf decorator and metadata.
- *
- * @stable
- * @Annotation
  */
 export const SkipSelf: SkipSelfDecorator = makeParamDecorator('SkipSelf');
-
-/**
- * Type of the Host decorator / constructor function.
- *
- * @stable
- */
-export interface HostDecorator {
-  /**
-   * @whatItDoes Specifies that an injector should retrieve a dependency from any injector until
-   * reaching the host element of the current component.
-   * @howToUse
-   * ```
-   * @Injectable()
-   * class Car {
-   *   constructor(@Host() public engine:Engine) {}
-   * }
-   * ```
-   *
-   * @description
-   * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
-   *
-   * ### Example
-   *
-   * {@example core/di/ts/metadata_spec.ts region='Host'}
-   *
-   * @stable
-   */
-  (): any;
-  new (): Host;
-}
-
-/**
- * Type of the Host metadata.
- *
- * @stable
- */
-export interface Host {}
-
-/**
- * Host decorator and metadata.
- *
- * @stable
- * @Annotation
- */
-export const Host: HostDecorator = makeParamDecorator('Host');

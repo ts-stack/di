@@ -20,7 +20,7 @@ function fake(){ /* unused function to prevent the license merging with comments
  *
 ```
 interface MyInterface {...}
-var myInterface = injector.get(new InjectionToken<MyInterface>('SomeToken'));
+let myInterface = injector.get(new InjectionToken<MyInterface>('SomeToken'));
 // myInterface is inferred to be MyInterface.
 ```
  *

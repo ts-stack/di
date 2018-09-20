@@ -28,64 +28,62 @@ const UNDEFINED = new Object();
  * In typical use, application code asks for the dependencies in the constructor and they are
  * resolved by the `Injector`.
  *
- * ### Example ([live demo](http://plnkr.co/edit/jzjec0?p=preview))
+ * ### Example
  *
  * The following example creates an `Injector` configured to create `Engine` and `Car`.
  *
- * ```typescript
- * @Injectable()
- * class Engine {
- * }
- *
- * @Injectable()
- * class Car {
- *   constructor(public engine:Engine) {}
- * }
- *
- * var injector = ReflectiveInjector.resolveAndCreate([Car, Engine]);
- * var car = injector.get(Car);
- * expect(car instanceof Car).toBe(true);
- * expect(car.engine instanceof Engine).toBe(true);
- * ```
+```ts
+@Injectable()
+class Engine {
+}
+
+@Injectable()
+class Car {
+  constructor(public engine:Engine) {}
+}
+
+let injector = ReflectiveInjector.resolveAndCreate([Car, Engine]);
+let car = injector.get(Car);
+expect(car instanceof Car).toBe(true);
+expect(car.engine instanceof Engine).toBe(true);
+```
  *
  * Notice, we don't use the `new` operator because we explicitly want to have the `Injector`
  * resolve all of the object's dependencies automatically.
- *
- * @stable
  */
 export abstract class ReflectiveInjector implements Injector {
   /**
    * Turns an array of provider definitions into an array of resolved providers.
    *
    * A resolution is a process of flattening multiple nested arrays and converting individual
-   * providers into an array of {@link ResolvedReflectiveProvider}s.
+   * providers into an array of `ResolvedReflectiveProvider`.
    *
-   * ### Example ([live demo](http://plnkr.co/edit/AiXTHi?p=preview))
+   * ### Example
    *
-   * ```typescript
-   * @Injectable()
-   * class Engine {
-   * }
+  ```ts
+@Injectable()
+  class Engine {
+}
+
+@Injectable()
+  class Car {
+    constructor(public engine:Engine) {}
+  }
+
+  let providers = ReflectiveInjector.resolve([Car, [[Engine]]]);
+
+  expect(providers.length).toEqual(2);
+
+  expect(providers[0] instanceof ResolvedReflectiveProvider).toBe(true);
+  expect(providers[0].key.displayName).toBe("Car");
+  expect(providers[0].dependencies.length).toEqual(1);
+  expect(providers[0].factory).toBeDefined();
+
+  expect(providers[1].key.displayName).toBe("Engine");
+});
+  ```
    *
-   * @Injectable()
-   * class Car {
-   *   constructor(public engine:Engine) {}
-   * }
-   *
-   * var providers = ReflectiveInjector.resolve([Car, [[Engine]]]);
-   *
-   * expect(providers.length).toEqual(2);
-   *
-   * expect(providers[0] instanceof ResolvedReflectiveProvider).toBe(true);
-   * expect(providers[0].key.displayName).toBe("Car");
-   * expect(providers[0].dependencies.length).toEqual(1);
-   * expect(providers[0].factory).toBeDefined();
-   *
-   * expect(providers[1].key.displayName).toBe("Engine");
-   * });
-   * ```
-   *
-   * See {@link ReflectiveInjector#fromResolvedProviders} for more info.
+   * See `fromResolvedProviders` for more info.
    */
   static resolve(providers: Provider[]): ResolvedReflectiveProvider[] {
     return resolveReflectiveProviders(providers);
@@ -94,28 +92,28 @@ export abstract class ReflectiveInjector implements Injector {
   /**
    * Resolves an array of providers and creates an injector from those providers.
    *
-   * The passed-in providers can be an array of `Type`, {@link Provider},
+   * The passed-in providers can be an array of `Type`, `Provider`,
    * or a recursive array of more providers.
    *
-   * ### Example ([live demo](http://plnkr.co/edit/ePOccA?p=preview))
+   * ### Example
    *
-   * ```typescript
-   * @Injectable()
-   * class Engine {
-   * }
-   *
-   * @Injectable()
-   * class Car {
-   *   constructor(public engine:Engine) {}
-   * }
-   *
-   * var injector = ReflectiveInjector.resolveAndCreate([Car, Engine]);
-   * expect(injector.get(Car) instanceof Car).toBe(true);
-   * ```
+```ts
+@Injectable()
+class Engine {
+}
+
+@Injectable()
+class Car {
+  constructor(public engine:Engine) {}
+}
+
+let injector = ReflectiveInjector.resolveAndCreate([Car, Engine]);
+expect(injector.get(Car) instanceof Car).toBe(true);
+```
    *
    * This function is slower than the corresponding `fromResolvedProviders`
    * because it needs to resolve the passed-in providers first.
-   * See {@link ReflectiveInjector#resolve} and {@link ReflectiveInjector#fromResolvedProviders}.
+   * See `ReflectiveInjector.resolve()` and `ReflectiveInjector.fromResolvedProviders()`.
    */
   static resolveAndCreate(providers: Provider[], parent?: Injector): ReflectiveInjector {
     const ResolvedReflectiveProviders = ReflectiveInjector.resolve(providers);
@@ -127,23 +125,22 @@ export abstract class ReflectiveInjector implements Injector {
    *
    * This API is the recommended way to construct injectors in performance-sensitive parts.
    *
-   * ### Example ([live demo](http://plnkr.co/edit/KrSMci?p=preview))
+   * ### Example
    *
-   * ```typescript
-   * @Injectable()
-   * class Engine {
-   * }
-   *
-   * @Injectable()
-   * class Car {
-   *   constructor(public engine:Engine) {}
-   * }
-   *
-   * var providers = ReflectiveInjector.resolve([Car, Engine]);
-   * var injector = ReflectiveInjector.fromResolvedProviders(providers);
-   * expect(injector.get(Car) instanceof Car).toBe(true);
-   * ```
-   * @experimental
+```ts
+@Injectable()
+class Engine {
+}
+
+@Injectable()
+class Car {
+  constructor(public engine:Engine) {}
+}
+
+let providers = ReflectiveInjector.resolve([Car, Engine]);
+let injector = ReflectiveInjector.fromResolvedProviders(providers);
+expect(injector.get(Car) instanceof Car).toBe(true);
+```
    */
   static fromResolvedProviders(providers: ResolvedReflectiveProvider[], parent?: Injector):
       ReflectiveInjector {
@@ -154,72 +151,69 @@ export abstract class ReflectiveInjector implements Injector {
   /**
    * Parent of this injector.
    *
-   * <!-- TODO: Add a link to the section of the user guide talking about hierarchical injection.
-   * -->
+   * ### Example
    *
-   * ### Example ([live demo](http://plnkr.co/edit/eosMGo?p=preview))
-   *
-   * ```typescript
-   * var parent = ReflectiveInjector.resolveAndCreate([]);
-   * var child = parent.resolveAndCreateChild([]);
-   * expect(child.parent).toBe(parent);
-   * ```
+```ts
+let parent = ReflectiveInjector.resolveAndCreate([]);
+let child = parent.resolveAndCreateChild([]);
+expect(child.parent).toBe(parent);
+```
+   * 
+   * See [Hierarchical Dependency Injectors](https://v4.angular.io/guide/hierarchical-dependency-injection)
    */
   abstract get parent(): Injector|null;
 
   /**
    * Resolves an array of providers and creates a child injector from those providers.
    *
-   * <!-- TODO: Add a link to the section of the user guide talking about hierarchical injection.
-   * -->
-   *
-   * The passed-in providers can be an array of `Type`, {@link Provider},
+   * The passed-in providers can be an array of `Type`, `Provider`,
    * or a recursive array of more providers.
    *
-   * ### Example ([live demo](http://plnkr.co/edit/opB3T4?p=preview))
+   * ### Example
    *
-   * ```typescript
-   * class ParentProvider {}
-   * class ChildProvider {}
-   *
-   * var parent = ReflectiveInjector.resolveAndCreate([ParentProvider]);
-   * var child = parent.resolveAndCreateChild([ChildProvider]);
-   *
-   * expect(child.get(ParentProvider) instanceof ParentProvider).toBe(true);
-   * expect(child.get(ChildProvider) instanceof ChildProvider).toBe(true);
-   * expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));
-   * ```
+```ts
+class ParentProvider {}
+class ChildProvider {}
+
+let parent = ReflectiveInjector.resolveAndCreate([ParentProvider]);
+let child = parent.resolveAndCreateChild([ChildProvider]);
+
+expect(child.get(ParentProvider) instanceof ParentProvider).toBe(true);
+expect(child.get(ChildProvider) instanceof ChildProvider).toBe(true);
+expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));
+```
    *
    * This function is slower than the corresponding `createChildFromResolved`
    * because it needs to resolve the passed-in providers first.
-   * See {@link ReflectiveInjector#resolve} and {@link ReflectiveInjector#createChildFromResolved}.
+   * 
+   * See [Hierarchical Dependency Injectors](https://v4.angular.io/guide/hierarchical-dependency-injection),
+   * `ReflectiveInjector.resolve()` and `ReflectiveInjector.createChildFromResolved()`.
    */
   abstract resolveAndCreateChild(providers: Provider[]): ReflectiveInjector;
 
   /**
    * Creates a child injector from previously resolved providers.
    *
-   * <!-- TODO: Add a link to the section of the user guide talking about hierarchical injection.
-   * -->
-   *
    * This API is the recommended way to construct injectors in performance-sensitive parts.
    *
-   * ### Example ([live demo](http://plnkr.co/edit/VhyfjN?p=preview))
+   * ### Example
    *
-   * ```typescript
-   * class ParentProvider {}
-   * class ChildProvider {}
-   *
-   * var parentProviders = ReflectiveInjector.resolve([ParentProvider]);
-   * var childProviders = ReflectiveInjector.resolve([ChildProvider]);
-   *
-   * var parent = ReflectiveInjector.fromResolvedProviders(parentProviders);
-   * var child = parent.createChildFromResolved(childProviders);
-   *
-   * expect(child.get(ParentProvider) instanceof ParentProvider).toBe(true);
-   * expect(child.get(ChildProvider) instanceof ChildProvider).toBe(true);
-   * expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));
-   * ```
+```ts
+class ParentProvider {}
+class ChildProvider {}
+
+let parentProviders = ReflectiveInjector.resolve([ParentProvider]);
+let childProviders = ReflectiveInjector.resolve([ChildProvider]);
+
+let parent = ReflectiveInjector.fromResolvedProviders(parentProviders);
+let child = parent.createChildFromResolved(childProviders);
+
+expect(child.get(ParentProvider) instanceof ParentProvider).toBe(true);
+expect(child.get(ChildProvider) instanceof ChildProvider).toBe(true);
+expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));
+```
+   * 
+   * See [Hierarchical Dependency Injectors](https://v4.angular.io/guide/hierarchical-dependency-injection)
    */
   abstract createChildFromResolved(providers: ResolvedReflectiveProvider[]): ReflectiveInjector;
 
@@ -228,24 +222,24 @@ export abstract class ReflectiveInjector implements Injector {
    *
    * The created object does not get cached by the injector.
    *
-   * ### Example ([live demo](http://plnkr.co/edit/yvVXoB?p=preview))
+   * ### Example
    *
-   * ```typescript
-   * @Injectable()
-   * class Engine {
-   * }
-   *
-   * @Injectable()
-   * class Car {
-   *   constructor(public engine:Engine) {}
-   * }
-   *
-   * var injector = ReflectiveInjector.resolveAndCreate([Engine]);
-   *
-   * var car = injector.resolveAndInstantiate(Car);
-   * expect(car.engine).toBe(injector.get(Engine));
-   * expect(car).not.toBe(injector.resolveAndInstantiate(Car));
-   * ```
+```ts
+@Injectable()
+class Engine {
+}
+
+@Injectable()
+class Car {
+  constructor(public engine:Engine) {}
+}
+
+let injector = ReflectiveInjector.resolveAndCreate([Engine]);
+
+let car = injector.resolveAndInstantiate(Car);
+expect(car.engine).toBe(injector.get(Engine));
+expect(car).not.toBe(injector.resolveAndInstantiate(Car));
+```
    */
   abstract resolveAndInstantiate(provider: Provider): any;
 
@@ -254,24 +248,24 @@ export abstract class ReflectiveInjector implements Injector {
    *
    * The created object does not get cached by the injector.
    *
-   * ### Example ([live demo](http://plnkr.co/edit/ptCImQ?p=preview))
+   * ### Example
    *
-   * ```typescript
-   * @Injectable()
-   * class Engine {
-   * }
-   *
-   * @Injectable()
-   * class Car {
-   *   constructor(public engine:Engine) {}
-   * }
-   *
-   * var injector = ReflectiveInjector.resolveAndCreate([Engine]);
-   * var carProvider = ReflectiveInjector.resolve([Car])[0];
-   * var car = injector.instantiateResolved(carProvider);
-   * expect(car.engine).toBe(injector.get(Engine));
-   * expect(car).not.toBe(injector.instantiateResolved(carProvider));
-   * ```
+```ts
+@Injectable()
+class Engine {
+}
+
+@Injectable()
+class Car {
+  constructor(public engine:Engine) {}
+}
+
+let injector = ReflectiveInjector.resolveAndCreate([Engine]);
+let carProvider = ReflectiveInjector.resolve([Car])[0];
+let car = injector.instantiateResolved(carProvider);
+expect(car.engine).toBe(injector.get(Engine));
+expect(car).not.toBe(injector.instantiateResolved(carProvider));
+```
    */
   abstract instantiateResolved(provider: ResolvedReflectiveProvider): any;
 

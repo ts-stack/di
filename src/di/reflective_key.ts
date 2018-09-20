@@ -13,20 +13,19 @@ import {resolveForwardRef} from './forward_ref';
 
 
 /**
- * A unique object used for retrieving items from the {@link ReflectiveInjector}.
+ * A unique object used for retrieving items from the `ReflectiveInjector`.
  *
  * Keys have:
  * - a system-wide unique `id`.
  * - a `token`.
  *
- * `Key` is used internally by {@link ReflectiveInjector} because its system-wide unique `id` allows
+ * `Key` is used internally by `ReflectiveInjector` because its system-wide unique `id` allows
  * the
  * injector to store created objects in a more efficient way.
  *
- * `Key` should not be created directly. {@link ReflectiveInjector} creates keys automatically when
+ * `Key` should not be created directly. `ReflectiveInjector` creates keys automatically when
  * resolving
  * providers.
- * @experimental
  */
 export class ReflectiveKey {
   /**

@@ -26,24 +26,41 @@ class _NullInjector implements Injector {
 }
 
 /**
- * @whatItDoes Injector interface
- * @howToUse
- * ```
- * const injector: Injector = ...;
- * injector.get(...);
- * ```
+ * ### Overview
+```ts
+class Injector {
+  static THROW_IF_NOT_FOUND: _THROW_IF_NOT_FOUND
+  static NULL: Injector
+  get<T>(token: Type<T>|InjectionToken<T>, notFoundValue?: T): T
+}
+```
  *
- * @description
- * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
+ * ### How To Use
+ * 
+```ts
+const injector: Injector = ...;
+injector.get(...);
+```
+ *
+ * ### Description
+ * For more details, see the [Dependency Injection Guide](https://v4.angular.io/guide/dependency-injection).
  *
  * ### Example
  *
- * {@example core/di/ts/injector_spec.ts region='Injector'}
+```ts
+const injector: Injector =
+    ReflectiveInjector.resolveAndCreate([{provide: 'validToken', useValue: 'Value'}]);
+expect(injector.get('validToken')).toEqual('Value');
+expect(() => injector.get('invalidToken')).toThrowError();
+expect(injector.get('invalidToken', 'notFound')).toEqual('notFound');
+```
  *
  * `Injector` returns itself when given `Injector` as a token:
- * {@example core/di/ts/injector_spec.ts region='injectInjector'}
  *
- * @stable
+```ts
+const injector = ReflectiveInjector.resolveAndCreate([]);
+expect(injector.get(Injector)).toBe(injector);
+```
  */
 export abstract class Injector {
   static THROW_IF_NOT_FOUND = _THROW_IF_NOT_FOUND;

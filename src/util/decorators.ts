@@ -15,9 +15,7 @@ let _nextClassId = 0;
 const Reflect = global['Reflect'];
 
 /**
- * Declares the interface to be used with {@link Class}.
- *
- * @stable
+ * Declares the interface to be used with `Class`.
  */
 export type ClassDefinition = {
   /**
@@ -32,7 +30,7 @@ export type ClassDefinition = {
    * annotations may be specified.
    * The number of arguments and the number of parameter annotations must match.
    *
-   * See {@link Class} for example of usage.
+   * See `Class` for example of usage.
    */
   constructor: Function | any[];
 } &
@@ -51,19 +49,18 @@ export type ClassDefinition = {
  *
  * DSL syntax:
  *
- * ```
- * var MyClass = ng
- *   .Component({...})
- *   .Class({...});
- * ```
+```ts
+let MyClass = ng
+  .Component({...})
+  .Class({...});
+```
  *
  * ES7 syntax:
  *
- * ```
- * @ng.Component({...})
- * class MyClass {...}
- * ```
- * @stable
+```ts
+@ng.Component({...})
+class MyClass {...}
+```
  */
 export interface TypeDecorator {
   /**
@@ -80,12 +77,12 @@ export interface TypeDecorator {
   /**
    * Storage for the accumulated annotations so far used by the DSL syntax.
    *
-   * Used by {@link Class} to annotate the generated class.
+   * Used by `Class` to annotate the generated class.
    */
   annotations: any[];
 
   /**
-   * Generate a class from the definition and annotate it with {@link TypeDecorator#annotations}.
+   * Generate a class from the definition and annotate it with `TypeDecorator.annotations()`.
    */
   Class(obj: ClassDefinition): Type<any>;
 }
@@ -148,83 +145,81 @@ function applyParams(fnOrArray: Function | any[] | undefined, key: string): Func
  *
  * ## Basic Example
  *
- * ```
- * var Greeter = ng.Class({
- *   constructor: function(name) {
- *     this.name = name;
- *   },
- *
- *   greet: function() {
- *     alert('Hello ' + this.name + '!');
- *   }
- * });
- * ```
+```ts
+let Greeter = ng.Class({
+  constructor: function(name) {
+    this.name = name;
+  },
+
+  greet: function() {
+    alert('Hello ' + this.name + '!');
+  }
+});
+```
  *
  * is equivalent to ES6:
  *
- * ```
- * class Greeter {
- *   constructor(name) {
- *     this.name = name;
- *   }
- *
- *   greet() {
- *     alert('Hello ' + this.name + '!');
- *   }
- * }
- * ```
+```ts
+class Greeter {
+  constructor(name) {
+    this.name = name;
+  }
+
+  greet() {
+    alert('Hello ' + this.name + '!');
+  }
+}
+```
  *
  * or equivalent to ES5:
  *
- * ```
- * var Greeter = function (name) {
- *   this.name = name;
- * }
- *
- * Greeter.prototype.greet = function () {
- *   alert('Hello ' + this.name + '!');
- * }
- * ```
+```
+let Greeter = function (name) {
+  this.name = name;
+}
+
+Greeter.prototype.greet = function () {
+  alert('Hello ' + this.name + '!');
+}
+```
  *
  * ### Example with parameter annotations
  *
- * ```
- * var MyService = ng.Class({
- *   constructor: [String, [new Optional(), Service], function(name, myService) {
- *     ...
- *   }]
- * });
- * ```
+```ts
+let MyService = ng.Class({
+  constructor: [String, [new Optional(), Service], function(name, myService) {
+    ...
+  }]
+});
+```
  *
  * is equivalent to ES6:
  *
- * ```
- * class MyService {
- *   constructor(name: string, @Optional() myService: Service) {
- *     ...
- *   }
- * }
- * ```
+```
+class MyService {
+  constructor(name: string, @Optional() myService: Service) {
+    ...
+  }
+}
+```
  *
  * ### Example with inheritance
  *
- * ```
- * var Shape = ng.Class({
- *   constructor: (color) {
- *     this.color = color;
- *   }
- * });
- *
- * var Square = ng.Class({
- *   extends: Shape,
- *   constructor: function(color, size) {
- *     Shape.call(this, color);
- *     this.size = size;
- *   }
- * });
- * ```
- * @suppress {globalThis}
- * @stable
+```
+let Shape = ng.Class({
+  constructor: (color) {
+    this.color = color;
+  }
+});
+
+let Square = ng.Class({
+  extends: Shape,
+  constructor: function(color, size) {
+    Shape.call(this, color);
+    this.size = size;
+  }
+});
+```
  */
 export function Class(clsDef: ClassDefinition): Type<any> {
   const constructor = applyParams(
@@ -260,9 +255,6 @@ export function Class(clsDef: ClassDefinition): Type<any> {
   return <Type<any>>constructor;
 }
 
-/**
- * @suppress {globalThis}
- */
 export function makeDecorator(
   name: string,
   props?: (...args: any[]) => any,

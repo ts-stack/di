@@ -14,12 +14,13 @@ import {stringify} from '../util';
 
 
 /**
- * An interface that a function passed into {@link forwardRef} has to implement.
+ * An interface that a function passed into `forwardRef()` has to implement.
  *
  * ### Example
  *
- * {@example core/di/ts/forward_ref/forward_ref_spec.ts region='forward_ref_fn'}
- * @experimental
+```ts
+const ref = forwardRef(() => Lock);
+```
  */
 export interface ForwardRefFn { (): any; }
 
@@ -32,8 +33,23 @@ export interface ForwardRefFn { (): any; }
  * yet defined.
  *
  * ### Example
- * {@example core/di/ts/forward_ref/forward_ref_spec.ts region='forward_ref'}
- * @experimental
+```ts
+class Door {
+  lock: Lock;
+ 
+  // Door attempts to inject Lock, despite it not being defined yet.
+  // forwardRef makes this possible.
+  constructor(@Inject(forwardRef(() => Lock)) lock: Lock) { this.lock = lock; }
+}
+ 
+// Only at this point Lock is defined.
+class Lock {}
+ 
+const injector = ReflectiveInjector.resolveAndCreate([Door, Lock]);
+const door = injector.get(Door);
+expect(door instanceof Door).toBeTruthy();
+expect(door.lock instanceof Lock).toBeTruthy();
+```
  */
 export function forwardRef(forwardRefFn: ForwardRefFn): Type<any> {
   (<any>forwardRefFn).__forward_ref__ = forwardRef;
@@ -46,7 +62,14 @@ export function forwardRef(forwardRefFn: ForwardRefFn): Type<any> {
  *
  * Acts as the identity function when given a non-forward-ref value.
  * 
- * @experimental
+ * ### Example:
+ * 
+```ts
+const ref = forwardRef(() => 'refValue');
+expect(resolveForwardRef(ref)).toEqual('refValue');
+expect(resolveForwardRef('regularValue')).toEqual('regularValue');
+```
+ * See: `forwardRef()`
  */
 export function resolveForwardRef(type: any): any {
   if (typeof type === 'function' && type.hasOwnProperty('__forward_ref__') &&

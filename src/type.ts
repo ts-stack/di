@@ -9,14 +9,17 @@
 function fake(){ /* unused function to prevent the license merging with comments */}
 
 /**
- * @whatItDoes Represents a type that a Component or other object is instances of.
- *
- * @description
+ * ### Interface Overview
+ * 
+```ts
+interface Type<T> extends Function { 
+  new (...args: any[]): T
+}
+```
+ * Represents a type that a Component or other object is instances of.
  *
  * An example of a `Type` is `MyCustomComponent` class, which in JavaScript is be represented by
  * the `MyCustomComponent` constructor function.
- *
- * @stable
  */
 export const Type = Function;
 
