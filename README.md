@@ -51,7 +51,7 @@ const engine: Engine = injector.get(Engine);
 console.log(engine instanceof Engine);
 ```
 
-For more examples, see the [tests for ts-di](test/reflective_injector_spec.ts).
+For more examples, see the [tests for ts-di](test/reflective_injector.spec.ts).
 
 ## API
 
