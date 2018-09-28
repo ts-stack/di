@@ -11,7 +11,7 @@
   },
   "files": [
     "../src/index.ts",
-    "./forward_ref_spec.ts",
+    "./forward_ref.spec.ts",
     "./injector_spec.ts",
     "./reflective_injector.spec.ts",
     "./reflective_key_spec.ts"
