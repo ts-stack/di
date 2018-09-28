@@ -14,7 +14,7 @@
     "./forward_ref.spec.ts",
     "./injector.spec.ts",
     "./reflective_injector.spec.ts",
-    "./reflective_key_spec.ts"
+    "./reflective_key.spec.ts"
   ],
   "angularCompilerOptions": {
     "skipTemplateCodegen": true
