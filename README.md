@@ -17,7 +17,7 @@ Also you need to install `reflect-metadata` module:
 ```bash
 npm i reflect-metadata
 # OR
-npm i reflect-metadata
+yarn add reflect-metadata
 ```
 
 Then, in `tsconfig.json` file, for `compilerOptions` you need set `experimentalDecorators` and `emitDecoratorMetadata` to `true`:
@@ -38,17 +38,19 @@ Then, in `tsconfig.json` file, for `compilerOptions` you need set `experimentalD
 import 'reflect-metadata';
 import { ReflectiveInjector, Injectable } from 'ts-di';
 
-class Engine { }
-
 @Injectable()
-class Car {
-  constructor(public engine: Engine) { }
+class UsefulService {
 }
 
-const injector = ReflectiveInjector.resolveAndCreate([Engine]);
-const engine: Engine = injector.get(Engine);
+@Injectable()
+class NeedsService {
+  constructor(public service: UsefulService) {}
+}
 
-console.log(engine instanceof Engine);
+const injector = ReflectiveInjector.resolveAndCreate([NeedsService, UsefulService]);
+const needsService = injector.get(NeedsService);
+expect(needsService instanceof NeedsService).toBe(true);
+expect(needsService.service instanceof UsefulService).toBe(true);
 ```
 
 For more examples, see the [tests for ts-di](test/reflective_injector.spec.ts).
