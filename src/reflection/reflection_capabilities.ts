@@ -6,7 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */ }
+function fake() {
+  /* unused function to prevent the license merging with comments */
+}
 
 import { Type, isType } from '../type';
 import { global, stringify } from '../util';
@@ -21,17 +23,23 @@ export const DELEGATE_CTOR = /^function\s+\S+\(\)\s*{[\s\S]+\.apply\(this,\s*arg
 export class ReflectionCapabilities implements PlatformReflectionCapabilities {
   private _reflect: any;
 
-  constructor(reflect?: any) { this._reflect = reflect || global['Reflect']; }
+  constructor(reflect?: any) {
+    this._reflect = reflect || global.Reflect;
+  }
 
-  isReflectionEnabled(): boolean { return true; }
+  isReflectionEnabled(): boolean {
+    return true;
+  }
 
-  factory<T>(t: Type<T>): (args: any[]) => T { return (...args: any[]) => new t(...args); }
+  factory<T>(t: Type<T>): (args: any[]) => T {
+    return (...args: any[]) => new t(...args);
+  }
 
   /** @internal */
   _zipTypesAndAnnotations(paramTypes: any[], paramAnnotations: any[]): any[][] {
     let result: any[][];
 
-    if (typeof paramTypes === 'undefined') {
+    if (typeof paramTypes == 'undefined') {
       result = new Array(paramAnnotations.length);
     } else {
       result = new Array(paramTypes.length);
@@ -41,7 +49,7 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
       // TS outputs Object for parameters without types, while Traceur omits
       // the annotations. For now we preserve the Traceur behavior to aid
       // migration, but this can be revisited.
-      if (typeof paramTypes === 'undefined') {
+      if (typeof paramTypes == 'undefined') {
         result[i] = [];
       } else if (paramTypes[i] != Object) {
         result[i] = [paramTypes[i]];
@@ -68,21 +76,20 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
     }
 
     // Prefer the direct API.
-    if ((<any>type).parameters && (<any>type).parameters !== parentCtor.parameters) {
-      return (<any>type).parameters;
+    if ((type as any).parameters && (type as any).parameters !== parentCtor.parameters) {
+      return (type as any).parameters;
     }
 
     // API of tsickle for lowering decorators to properties on the class.
-    const tsickleCtorParams = (<any>type).ctorParameters;
+    const tsickleCtorParams = (type as any).ctorParameters;
     if (tsickleCtorParams && tsickleCtorParams !== parentCtor.ctorParameters) {
       // Newer tsickle uses a function closure
       // Retain the non-function case for compatibility with older tsickle
-      const ctorParameters =
-        typeof tsickleCtorParams === 'function' ? tsickleCtorParams() : tsickleCtorParams;
+      const ctorParameters = typeof tsickleCtorParams == 'function' ? tsickleCtorParams() : tsickleCtorParams;
       const paramTypes = ctorParameters.map((ctorParam: any) => ctorParam && ctorParam.type);
       const paramAnnotations = ctorParameters.map(
-        (ctorParam: any) =>
-          ctorParam && convertTsickleDecoratorIntoMetadata(ctorParam.decorators));
+        (ctorParam: any) => ctorParam && convertTsickleDecoratorIntoMetadata(ctorParam.decorators)
+      );
       return this._zipTypesAndAnnotations(paramTypes, paramAnnotations);
     }
 
@@ -99,7 +106,7 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
     // based on function.length.
     // Note: We know that this is a real constructor as we checked
     // the content of the constructor above.
-    return new Array((<any>type.length)).fill(undefined);
+    return new Array(type.length as any).fill(undefined);
   }
 
   parameters(type: Type<any>): any[][] {
@@ -118,17 +125,17 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
 
   private _ownAnnotations(typeOrFunc: Type<any>, parentCtor: any): any[] | null {
     // Prefer the direct API.
-    if ((<any>typeOrFunc).annotations && (<any>typeOrFunc).annotations !== parentCtor.annotations) {
-      let annotations = (<any>typeOrFunc).annotations;
-      if (typeof annotations === 'function' && annotations.annotations) {
+    if ((typeOrFunc as any).annotations && (typeOrFunc as any).annotations !== parentCtor.annotations) {
+      let annotations = (typeOrFunc as any).annotations;
+      if (typeof annotations == 'function' && annotations.annotations) {
         annotations = annotations.annotations;
       }
       return annotations;
     }
 
     // API of tsickle for lowering decorators to properties on the class.
-    if ((<any>typeOrFunc).decorators && (<any>typeOrFunc).decorators !== parentCtor.decorators) {
-      return convertTsickleDecoratorIntoMetadata((<any>typeOrFunc).decorators);
+    if ((typeOrFunc as any).decorators && (typeOrFunc as any).decorators !== parentCtor.decorators) {
+      return convertTsickleDecoratorIntoMetadata((typeOrFunc as any).decorators);
     }
 
     // API for metadata created by invoking the decorators.
@@ -150,20 +157,18 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
 
   private _ownPropMetadata(typeOrFunc: any, parentCtor: any): { [key: string]: any[] } | null {
     // Prefer the direct API.
-    if ((<any>typeOrFunc).propMetadata &&
-      (<any>typeOrFunc).propMetadata !== parentCtor.propMetadata) {
-      let propMetadata = (<any>typeOrFunc).propMetadata;
-      if (typeof propMetadata === 'function' && propMetadata.propMetadata) {
+    if ((typeOrFunc as any).propMetadata && (typeOrFunc as any).propMetadata !== parentCtor.propMetadata) {
+      let propMetadata = (typeOrFunc as any).propMetadata;
+      if (typeof propMetadata == 'function' && propMetadata.propMetadata) {
         propMetadata = propMetadata.propMetadata;
       }
       return propMetadata;
     }
 
     // API of tsickle for lowering decorators to properties on the class.
-    if ((<any>typeOrFunc).propDecorators &&
-      (<any>typeOrFunc).propDecorators !== parentCtor.propDecorators) {
-      const propDecorators = (<any>typeOrFunc).propDecorators;
-      const propMetadata = <{ [key: string]: any[] }>{};
+    if ((typeOrFunc as any).propDecorators && (typeOrFunc as any).propDecorators !== parentCtor.propDecorators) {
+      const propDecorators = (typeOrFunc as any).propDecorators;
+      const propMetadata = {} as { [key: string]: any[] };
       Object.keys(propDecorators).forEach(prop => {
         propMetadata[prop] = convertTsickleDecoratorIntoMetadata(propDecorators[prop]);
       });
@@ -185,13 +190,13 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
     const propMetadata: { [key: string]: any[] } = {};
     if (parentCtor !== Object) {
       const parentPropMetadata = this.propMetadata(parentCtor);
-      Object.keys(parentPropMetadata).forEach((propName) => {
+      Object.keys(parentPropMetadata).forEach(propName => {
         propMetadata[propName] = parentPropMetadata[propName];
       });
     }
     const ownPropMetadata = this._ownPropMetadata(typeOrFunc, parentCtor);
     if (ownPropMetadata) {
-      Object.keys(ownPropMetadata).forEach((propName) => {
+      Object.keys(ownPropMetadata).forEach(propName => {
         const decorators: any[] = [];
         if (propMetadata.hasOwnProperty(propName)) {
           decorators.push(...propMetadata[propName]);
@@ -207,34 +212,40 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
     return type instanceof Type && lcProperty in type.prototype;
   }
 
-  getter(name: string): GetterFn { return <GetterFn>new Function('o', 'return o.' + name + ';'); }
+  getter(name: string): GetterFn {
+    return new Function('o', 'return o.' + name + ';') as GetterFn;
+  }
 
   setter(name: string): SetterFn {
-    return <SetterFn>new Function('o', 'v', 'return o.' + name + ' = v;');
+    return new Function('o', 'v', 'return o.' + name + ' = v;') as SetterFn;
   }
 
   method(name: string): MethodFn {
     const functionBody = `if (!o.${name}) throw new Error('"${name}" is undefined');
         return o.${name}.apply(o, args);`;
-    return <MethodFn>new Function('o', 'args', functionBody);
+    return new Function('o', 'args', functionBody) as MethodFn;
   }
 
   // There is not a concept of import uri in Js, but this is useful in developing Dart applications.
   importUri(type: any): string {
     // StaticSymbol
-    if (typeof type === 'object' && type['filePath']) {
-      return type['filePath'];
+    if (typeof type == 'object' && type.filePath) {
+      return type.filePath;
     }
     // Runtime type
     return `./${stringify(type)}`;
   }
 
-  resourceUri(type: any): string { return `./${stringify(type)}`; }
+  resourceUri(type: any): string {
+    return `./${stringify(type)}`;
+  }
 
   resolveIdentifier(name: string, moduleUrl: string, members: string[], runtime: any): any {
     return runtime;
   }
-  resolveEnum(enumIdentifier: any, name: string): any { return enumIdentifier[name]; }
+  resolveEnum(enumIdentifier: any, name: string): any {
+    return enumIdentifier[name];
+  }
 }
 
 function convertTsickleDecoratorIntoMetadata(decoratorInvocations: any[]): any[] {

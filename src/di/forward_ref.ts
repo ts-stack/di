@@ -6,12 +6,12 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */ }
+function fake() {
+  /* unused function to prevent the license merging with comments */
+}
 
 import { Type } from '../type';
 import { stringify } from '../util';
-
-
 
 /**
  * A type that a function passed into `forwardRef()` has to implement.
@@ -52,9 +52,11 @@ expect(door.lock instanceof Lock).toBeTruthy();
 ```
  */
 export function forwardRef(forwardRefFn: ForwardRefFn): Type<any> {
-  (<any>forwardRefFn).__forward_ref__ = forwardRef;
-  (<any>forwardRefFn).toString = function () { return stringify(this()); };
-  return (<Type<any>><any>forwardRefFn);
+  (forwardRefFn as any).__forward_ref__ = forwardRef;
+  (forwardRefFn as any).toString = function() {
+    return stringify(this());
+  };
+  return (forwardRefFn as any) as Type<any>;
 }
 
 /**
@@ -72,9 +74,8 @@ expect(resolveForwardRef('regularValue')).toEqual('regularValue');
  * See: `forwardRef()`
  */
 export function resolveForwardRef(type: any): any {
-  if (typeof type === 'function' && type.hasOwnProperty('__forward_ref__') &&
-    type.__forward_ref__ === forwardRef) {
-    return (<ForwardRefFn>type)();
+  if (typeof type == 'function' && type.hasOwnProperty('__forward_ref__') && type.__forward_ref__ === forwardRef) {
+    return (type as ForwardRefFn)();
   } else {
     return type;
   }

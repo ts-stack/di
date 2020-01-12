@@ -6,7 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */ }
+function fake() {
+  /* unused function to prevent the license merging with comments */
+}
 
 /**
  * Creates a token that can be used in a DI Provider.
@@ -36,7 +38,9 @@ expect(url).toBe('http://localhost');
 ```
  */
 export class InjectionToken<T> {
-  constructor(protected desc: string) { }
+  constructor(protected desc: string) {}
 
-  toString(): string { return `InjectionToken ${this.desc}`; }
+  toString(): string {
+    return `InjectionToken ${this.desc}`;
+  }
 }

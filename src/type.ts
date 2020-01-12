@@ -6,7 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */ }
+function fake() {
+  /* unused function to prevent the license merging with comments */
+}
 
 /**
  * ### Interface Overview
@@ -24,7 +26,7 @@ interface Type<T> extends Function {
 export const Type = Function;
 
 export function isType(v: any): v is Type<any> {
-  return typeof v === 'function';
+  return typeof v == 'function';
 }
 
-export interface Type<T> extends Function { new (...args: any[]): T; }
+export type Type<T> = new (...args: any[]) => T;

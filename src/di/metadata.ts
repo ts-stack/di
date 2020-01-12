@@ -6,10 +6,11 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */ }
+function fake() {
+  /* unused function to prevent the license merging with comments */
+}
 
 import { makeDecorator, makeParamDecorator } from '../util/decorators';
-
 
 /**
  * Type of the Inject decorator / constructor function.
@@ -67,13 +68,14 @@ export interface InjectDecorator {
 /**
  * Type of the Inject metadata.
  */
-export interface Inject { token: any; }
+export interface Inject {
+  token: any;
+}
 
 /**
  * Inject decorator and metadata.
  */
 export const Inject: InjectDecorator = makeParamDecorator('Inject', (token: any) => ({ token }));
-
 
 /**
  * ### Interface Overview
@@ -114,7 +116,7 @@ export interface OptionalDecorator {
 /**
  * Type of the Optional metadata.
  */
-export interface Optional { }
+export interface Optional {}
 
 /**
  * Optional decorator and metadata.
@@ -182,12 +184,12 @@ export interface InjectableDecorator {
 /**
  * Type of the Injectable metadata.
  */
-export interface Injectable { }
+export interface Injectable {}
 
 /**
  * Injectable decorator and metadata.
  */
-export const Injectable: InjectableDecorator = <InjectableDecorator>makeDecorator('Injectable');
+export const Injectable: InjectableDecorator = makeDecorator('Injectable') as InjectableDecorator;
 
 /**
  * ### Interface Overview
@@ -241,13 +243,12 @@ export interface SelfDecorator {
 /**
  * Type of the Self metadata.
  */
-export interface Self { }
+export interface Self {}
 
 /**
  * Self decorator and metadata.
  */
 export const Self: SelfDecorator = makeParamDecorator('Self');
-
 
 /**
  * ### Interface Overview
@@ -301,7 +302,7 @@ export interface SkipSelfDecorator {
 /**
  * Type of the SkipSelf metadata.
  */
-export interface SkipSelf { }
+export interface SkipSelf {}
 
 /**
  * SkipSelf decorator and metadata.

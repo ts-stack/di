@@ -6,7 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */ }
+function fake() {
+  /* unused function to prevent the license merging with comments */
+}
 
 import { Injector, THROW_IF_NOT_FOUND } from './injector';
 import { Self, SkipSelf } from './metadata';
@@ -17,7 +19,7 @@ import {
   ReflectiveDependency,
   ResolvedReflectiveFactory,
   ResolvedReflectiveProvider,
-  resolveReflectiveProviders
+  resolveReflectiveProviders,
 } from './reflective_provider';
 
 // Threshold for the dynamic version
@@ -147,11 +149,9 @@ let injector = ReflectiveInjector.fromResolvedProviders(providers);
 expect(injector.get(Car) instanceof Car).toBe(true);
 ```
    */
-  static fromResolvedProviders(providers: ResolvedReflectiveProvider[], parent?: Injector):
-    ReflectiveInjector {
+  static fromResolvedProviders(providers: ResolvedReflectiveProvider[], parent?: Injector): ReflectiveInjector {
     return new ReflectiveInjector_(providers, parent);
   }
-
 
   /**
    * Parent of this injector.
@@ -309,7 +309,9 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     return this._getByKey(ReflectiveKey.get(token), null, notFoundValue);
   }
 
-  get parent(): Injector | null { return this._parent; }
+  get parent(): Injector | null {
+    return this._parent;
+  }
 
   resolveAndCreateChild(providers: Provider[]): ReflectiveInjector {
     const ResolvedReflectiveProviders = ReflectiveInjector.resolve(providers);
@@ -338,14 +340,16 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   }
 
   /** @internal */
-  _new (provider: ResolvedReflectiveProvider): any {
+  _new(provider: ResolvedReflectiveProvider): any {
     if (this._constructionCounter++ > this._getMaxNumberOfObjects()) {
       throw cyclicDependencyError(this, provider.key);
     }
     return this._instantiateProvider(provider);
   }
 
-  private _getMaxNumberOfObjects(): number { return this.objs.length; }
+  private _getMaxNumberOfObjects(): number {
+    return this.objs.length;
+  }
 
   private _instantiateProvider(provider: ResolvedReflectiveProvider): any {
     if (provider.multiProvider) {
@@ -361,13 +365,13 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
 
   private _instantiate(
     provider: ResolvedReflectiveProvider,
-    ResolvedReflectiveFactory: ResolvedReflectiveFactory): any {
+    ResolvedReflectiveFactory: ResolvedReflectiveFactory
+  ): any {
     const factory = ResolvedReflectiveFactory.factory;
 
     let deps: any[];
     try {
-      deps =
-        ResolvedReflectiveFactory.dependencies.map(dep => this._getByReflectiveDependency(dep));
+      deps = ResolvedReflectiveFactory.dependencies.map(dep => this._getByReflectiveDependency(dep));
     } catch (e) {
       if (e.addKey) {
         e.addKey(this, provider.key);
@@ -396,7 +400,6 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
 
     if (visibility instanceof Self) {
       return this._getByKeySelf(key, notFoundValue);
-
     } else {
       return this._getByKeyDefault(key, notFoundValue, visibility);
     }
@@ -428,7 +431,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   /** @internal */
   _getByKeySelf(key: ReflectiveKey, notFoundValue: any): any {
     const obj = this._getObjByKeyId(key.id);
-    return (obj !== UNDEFINED) ? obj : this._throwOrNull(key, notFoundValue);
+    return obj !== UNDEFINED ? obj : this._throwOrNull(key, notFoundValue);
   }
 
   /** @internal */
@@ -442,9 +445,11 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     }
 
     while (inj instanceof ReflectiveInjector_) {
-      const inj_ = <ReflectiveInjector_>inj;
+      const inj_ = inj as ReflectiveInjector_;
       const obj = inj_._getObjByKeyId(key.id);
-      if (obj !== UNDEFINED) { return obj; }
+      if (obj !== UNDEFINED) {
+        return obj;
+      }
       inj = inj_._parent;
     }
     if (inj !== null) {
@@ -455,13 +460,15 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   }
 
   get displayName(): string {
-    const providers =
-      _mapProviders(this, (b: ResolvedReflectiveProvider) => ' "' + b.key.displayName + '" ')
-        .join(', ');
+    const providers = _mapProviders(this, (b: ResolvedReflectiveProvider) => ' "' + b.key.displayName + '" ').join(
+      ', '
+    );
     return `ReflectiveInjector(providers: [${providers}])`;
   }
 
-  toString(): string { return this.displayName; }
+  toString(): string {
+    return this.displayName;
+  }
 }
 
 const INJECTOR_KEY = ReflectiveKey.get(Injector);

@@ -6,7 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */ }
+function fake() {
+  /* unused function to prevent the license merging with comments */
+}
 
 import { wrappedError } from '../error_handler';
 import { ERROR_ORIGINAL_ERROR } from '../errors';
@@ -46,13 +48,14 @@ export interface InjectionError extends Error {
 }
 
 function injectionError(
-  injector: ReflectiveInjector, key: ReflectiveKey,
+  injector: ReflectiveInjector,
+  key: ReflectiveKey,
   constructResolvingMessage: (keys: ReflectiveKey[]) => string,
-  originalError?: Error): InjectionError {
+  originalError?: Error
+): InjectionError {
   const keys = [key];
   const errMsg = constructResolvingMessage(keys);
-  const error =
-    (originalError ? wrappedError(errMsg, originalError) : Error(errMsg)) as InjectionError;
+  const error = (originalError ? wrappedError(errMsg, originalError) : Error(errMsg)) as InjectionError;
   error.addKey = addKey;
   error.keys = keys;
   error.injectors = [injector];
@@ -83,7 +86,7 @@ expect(() => Injector.resolveAndCreate([A])).toThrowError();
 ```
  */
 export function noProviderError(injector: ReflectiveInjector, key: ReflectiveKey): InjectionError {
-  return injectionError(injector, key, function (keys: ReflectiveKey[]) {
+  return injectionError(injector, key, function(keys: ReflectiveKey[]) {
     const first = stringify(keys[0].token);
     return `No provider for ${first}!${constructResolvingPath(keys)}`;
   });
@@ -105,9 +108,8 @@ expect(() => injector.get("one")).toThrowError();
  *
  * Retrieving `A` or `B` throws a `CyclicDependencyError` as the graph above cannot be constructed.
  */
-export function cyclicDependencyError(
-  injector: ReflectiveInjector, key: ReflectiveKey): InjectionError {
-  return injectionError(injector, key, function (keys: ReflectiveKey[]) {
+export function cyclicDependencyError(injector: ReflectiveInjector, key: ReflectiveKey): InjectionError {
+  return injectionError(injector, key, function(keys: ReflectiveKey[]) {
     return `Cannot instantiate cyclic dependency!${constructResolvingPath(keys)}`;
   });
 }
@@ -139,13 +141,20 @@ try {
 ```
  */
 export function instantiationError(
-  injector: ReflectiveInjector, originalException: any, originalStack: any,
+  injector: ReflectiveInjector,
+  originalException: any,
+  originalStack: any,
   key: ReflectiveKey
 ): InjectionError {
-  return injectionError(injector, key, function (keys: ReflectiveKey[]) {
-    const first = stringify(keys[0].token);
-    return `${originalException.message}: Error during instantiation of ${first}!${constructResolvingPath(keys)}.`;
-  }, originalException);
+  return injectionError(
+    injector,
+    key,
+    function(keys: ReflectiveKey[]) {
+      const first = stringify(keys[0].token);
+      return `${originalException.message}: Error during instantiation of ${first}!${constructResolvingPath(keys)}.`;
+    },
+    originalException
+  );
 }
 
 /**
@@ -159,8 +168,7 @@ expect(() => Injector.resolveAndCreate(["not a type"])).toThrowError();
 ```
  */
 export function invalidProviderError(provider: any) {
-  return Error(
-    `Invalid provider - only instances of Provider and Type are allowed, got: ${provider}`);
+  return Error(`Invalid provider - only instances of Provider and Type are allowed, got: ${provider}`);
 }
 
 /**
@@ -202,10 +210,10 @@ export function noAnnotationError(typeOrFunc: Type<any> | Function, params: any[
     }
   }
   return Error(
-    'Cannot resolve all parameters for \'' + stringify(typeOrFunc) + '\'(' +
-    signature.join(', ') + '). ' +
-    'Make sure that all the parameters are decorated with Inject or have valid type annotations and that \'' +
-    stringify(typeOrFunc) + '\' is decorated with Injectable.');
+    `Cannot resolve all parameters for '${stringify(typeOrFunc)}'(${signature.join(', ')}). ` +
+      `Make sure that all the parameters are decorated with Inject or have valid type annotations` +
+      ` and that '${stringify(typeOrFunc)}' is decorated with Injectable.`
+  );
 }
 
 /**
@@ -237,7 +245,6 @@ expect(() => Injector.resolveAndCreate([
 ])).toThrowError();
 ```
  */
-export function mixingMultiProvidersWithRegularProvidersError(
-  provider1: any, provider2: any): Error {
+export function mixingMultiProvidersWithRegularProvidersError(provider1: any, provider2: any): Error {
   return Error(`Cannot mix multi providers and regular providers, got: ${provider1} ${provider2}`);
 }

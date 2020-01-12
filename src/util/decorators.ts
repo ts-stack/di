@@ -6,13 +6,15 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */ }
+function fake() {
+  /* unused function to prevent the license merging with comments */
+}
 
 import { Type } from '../type';
 import { global, stringify } from '../util';
 
 let _nextClassId = 0;
-const Reflect = global['Reflect'];
+const Reflect = global.Reflect;
 
 /**
  * Declares the interface to be used with `Class`.
@@ -33,8 +35,7 @@ export type ClassDefinition = {
    * See `Class` for example of usage.
    */
   constructor: Function | any[];
-} &
-{
+} & {
   /**
    * Other methods on the class. Note that values should have type 'Function' but TS requires
    * all properties to have a narrower type than the index signature.
@@ -88,7 +89,7 @@ export interface TypeDecorator {
 }
 
 function extractAnnotation(annotation: any): any {
-  if (typeof annotation === 'function' && annotation.hasOwnProperty('annotation')) {
+  if (typeof annotation == 'function' && annotation.hasOwnProperty('annotation')) {
     // it is a decorator, extract annotation
     annotation = annotation.annotation;
   }
@@ -96,12 +97,17 @@ function extractAnnotation(annotation: any): any {
 }
 
 function applyParams(fnOrArray: Function | any[] | undefined, key: string): Function {
-  if (fnOrArray === Object || fnOrArray === String || fnOrArray === Function ||
-    fnOrArray === Number || fnOrArray === Array) {
+  if (
+    fnOrArray === Object ||
+    fnOrArray === String ||
+    fnOrArray === Function ||
+    fnOrArray === Number ||
+    fnOrArray === Array
+  ) {
     throw new Error(`Can not use native ${stringify(fnOrArray)} as constructor`);
   }
 
-  if (typeof fnOrArray === 'function') {
+  if (typeof fnOrArray == 'function') {
     return fnOrArray;
   }
 
@@ -109,13 +115,15 @@ function applyParams(fnOrArray: Function | any[] | undefined, key: string): Func
     const annotations: any[] = fnOrArray as any[];
     const annoLength = annotations.length - 1;
     const fn: Function = fnOrArray[annoLength];
-    if (typeof fn !== 'function') {
-      throw new Error(
-        `Last position of Class method array must be Function in key ${key} was '${stringify(fn)}'`);
+    if (typeof fn != 'function') {
+      throw new Error(`Last position of Class method array must be Function in key ${key} was '${stringify(fn)}'`);
     }
     if (annoLength != fn.length) {
       throw new Error(
-        `Number of annotations (${annoLength}) does not match number of arguments (${fn.length}) in the function: ${stringify(fn)}`);
+        `Number of annotations (${annoLength}) does not match number of arguments (${
+          fn.length
+        }) in the function: ${stringify(fn)}`
+      );
     }
     const paramsAnnotations: any[][] = [];
     for (let i = 0, ii = annotations.length - 1; i < ii; i++) {
@@ -126,7 +134,7 @@ function applyParams(fnOrArray: Function | any[] | undefined, key: string): Func
         for (let j = 0; j < annotation.length; j++) {
           paramAnnotations.push(extractAnnotation(annotation[j]));
         }
-      } else if (typeof annotation === 'function') {
+      } else if (typeof annotation == 'function') {
         paramAnnotations.push(extractAnnotation(annotation));
       } else {
         paramAnnotations.push(annotation);
@@ -137,7 +145,8 @@ function applyParams(fnOrArray: Function | any[] | undefined, key: string): Func
   }
 
   throw new Error(
-    `Only Function or Array is supported in Class definition for key '${key}' is '${stringify(fnOrArray)}'`);
+    `Only Function or Array is supported in Class definition for key '${key}' is '${stringify(fnOrArray)}'`
+  );
 }
 
 /**
@@ -222,18 +231,17 @@ let Square = ng.Class({
 ```
  */
 export function Class(clsDef: ClassDefinition): Type<any> {
-  const constructor = applyParams(
-    clsDef.hasOwnProperty('constructor') ? clsDef.constructor : undefined, 'constructor');
+  const constructor = applyParams(clsDef.hasOwnProperty('constructor') ? clsDef.constructor : undefined, 'constructor');
 
   let proto = constructor.prototype;
 
   if (clsDef.hasOwnProperty('extends')) {
-    if (typeof clsDef.extends === 'function') {
-      (<Function>constructor).prototype = proto =
-        Object.create((<Function>clsDef.extends).prototype);
+    if (typeof clsDef.extends == 'function') {
+      (constructor as Function).prototype = proto = Object.create((clsDef.extends as Function).prototype);
     } else {
       throw new Error(
-        `Class definition 'extends' property must be a constructor function was: ${stringify(clsDef.extends)}`);
+        `Class definition 'extends' property must be a constructor function was: ${stringify(clsDef.extends)}`
+      );
     }
   }
 
@@ -247,12 +255,12 @@ export function Class(clsDef: ClassDefinition): Type<any> {
     Reflect.defineMetadata('annotations', this.annotations, constructor);
   }
 
-  const constructorName = constructor['name'];
+  const constructorName = constructor.name;
   if (!constructorName || constructorName === 'constructor') {
-    (constructor as any)['overriddenName'] = `class${_nextClassId++}`;
+    (constructor as any).overriddenName = `class${_nextClassId++}`;
   }
 
-  return <Type<any>>constructor;
+  return constructor as Type<any>;
 }
 
 export function makeDecorator(
@@ -273,19 +281,20 @@ export function makeDecorator(
       return this;
     }
 
-    const annotationInstance = new (<any>DecoratorFactory)(objOrType);
-    const chainAnnotation =
-      typeof this === 'function' && Array.isArray(this.annotations) ? this.annotations : [];
+    const annotationInstance = new (DecoratorFactory as any)(objOrType);
+    const chainAnnotation = typeof this == 'function' && Array.isArray(this.annotations) ? this.annotations : [];
     chainAnnotation.push(annotationInstance);
-    const TypeDecorator: TypeDecorator = <TypeDecorator>function TypeDecorator(cls: Type<any>) {
+    const TypeDecorator: TypeDecorator = function TypeDecorator(cls: Type<any>) {
       const annotations = Reflect.getOwnMetadata('annotations', cls) || [];
       annotations.push(annotationInstance);
       Reflect.defineMetadata('annotations', annotations, cls);
       return cls;
-    };
+    } as TypeDecorator;
     TypeDecorator.annotations = chainAnnotation;
     TypeDecorator.Class = Class;
-    if (chainFn) { chainFn(TypeDecorator); }
+    if (chainFn) {
+      chainFn(TypeDecorator);
+    }
     return TypeDecorator;
   }
 
@@ -294,7 +303,7 @@ export function makeDecorator(
   }
 
   DecoratorFactory.prototype.toString = () => `@${name}`;
-  (<any>DecoratorFactory).annotationCls = DecoratorFactory;
+  (DecoratorFactory as any).annotationCls = DecoratorFactory;
   return DecoratorFactory;
 }
 
@@ -311,17 +320,16 @@ function makeMetadataCtor(props?: (...args: any[]) => any): any {
   };
 }
 
-export function makeParamDecorator(
-  name: string, props?: (...args: any[]) => any, parentClass?: any): any {
+export function makeParamDecorator(name: string, props?: (...args: any[]) => any, parentClass?: any): any {
   const metaCtor = makeMetadataCtor(props);
   function ParamDecoratorFactory(...args: any[]): any {
     if (this instanceof ParamDecoratorFactory) {
       metaCtor.apply(this, args);
       return this;
     }
-    const annotationInstance = new (<any>ParamDecoratorFactory)(...args);
+    const annotationInstance = new (ParamDecoratorFactory as any)(...args);
 
-    (<any>ParamDecorator).annotation = annotationInstance;
+    (ParamDecorator as any).annotation = annotationInstance;
     return ParamDecorator;
 
     function ParamDecorator(cls: any, unusedKey: any, index: number): any {
@@ -345,6 +353,6 @@ export function makeParamDecorator(
     ParamDecoratorFactory.prototype = Object.create(parentClass.prototype);
   }
   ParamDecoratorFactory.prototype.toString = () => `@${name}`;
-  (<any>ParamDecoratorFactory).annotationCls = ParamDecoratorFactory;
+  (ParamDecoratorFactory as any).annotationCls = ParamDecoratorFactory;
   return ParamDecoratorFactory;
 }

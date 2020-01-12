@@ -6,7 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() { /* unused function to prevent the license merging with comments */ }
+function fake() {
+  /* unused function to prevent the license merging with comments */
+}
 
 import { Type } from '../type';
 import { PlatformReflectionCapabilities } from './platform_reflection_capabilities';
@@ -20,11 +22,15 @@ export { GetterFn, MethodFn, SetterFn } from './types';
  * to power dependency injection and compilation.
  */
 export class Reflector {
-  constructor(public reflectionCapabilities: PlatformReflectionCapabilities) { }
+  constructor(public reflectionCapabilities: PlatformReflectionCapabilities) {}
 
-  updateCapabilities(caps: PlatformReflectionCapabilities) { this.reflectionCapabilities = caps; }
+  updateCapabilities(caps: PlatformReflectionCapabilities) {
+    this.reflectionCapabilities = caps;
+  }
 
-  factory(type: Type<any>): Function { return this.reflectionCapabilities.factory(type); }
+  factory(type: Type<any>): Function {
+    return this.reflectionCapabilities.factory(type);
+  }
 
   parameters(typeOrFunc: Type<any>): any[][] {
     return this.reflectionCapabilities.parameters(typeOrFunc);
@@ -42,15 +48,25 @@ export class Reflector {
     return this.reflectionCapabilities.hasLifecycleHook(type, lcProperty);
   }
 
-  getter(name: string): GetterFn { return this.reflectionCapabilities.getter(name); }
+  getter(name: string): GetterFn {
+    return this.reflectionCapabilities.getter(name);
+  }
 
-  setter(name: string): SetterFn { return this.reflectionCapabilities.setter(name); }
+  setter(name: string): SetterFn {
+    return this.reflectionCapabilities.setter(name);
+  }
 
-  method(name: string): MethodFn { return this.reflectionCapabilities.method(name); }
+  method(name: string): MethodFn {
+    return this.reflectionCapabilities.method(name);
+  }
 
-  importUri(type: any): string { return this.reflectionCapabilities.importUri(type); }
+  importUri(type: any): string {
+    return this.reflectionCapabilities.importUri(type);
+  }
 
-  resourceUri(type: any): string { return this.reflectionCapabilities.resourceUri(type); }
+  resourceUri(type: any): string {
+    return this.reflectionCapabilities.resourceUri(type);
+  }
 
   resolveIdentifier(name: string, moduleUrl: string, members: string[], runtime: any): any {
     return this.reflectionCapabilities.resolveIdentifier(name, moduleUrl, members, runtime);
