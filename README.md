@@ -2,25 +2,21 @@
 
 Dependency injection library for JavaScript and TypeScript. It is an extraction of the Angular's dependency injection which means that it's feature complete, fast, reliable and well tested. Also - retrieve all API documentation with example code.
 
-Up-to-date with Angular 4.4.7
+Up-to-date with Angular 4.4.7, but with support DI to inherited class (when the child class does not have a constructor, while the parent class has it).
 
 ## Install
 
 ```bash
 npm i ts-di
-# OR
-yarn add ts-di
 ```
 
 Also you need to install `reflect-metadata` module:
 
 ```bash
 npm i reflect-metadata
-# OR
-yarn add reflect-metadata
 ```
 
-Then, in `tsconfig.json` file, for `compilerOptions` you need set `experimentalDecorators` and `emitDecoratorMetadata` to `true`:
+Then, in `tsconfig.json` file, for `compilerOptions` you need to set `experimentalDecorators` and `emitDecoratorMetadata` to `true`:
 
 ```json
 {
