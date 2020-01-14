@@ -192,16 +192,13 @@ describe(`injector`, () => {
   });
 
   it('should provide to an alias', () => {
-    const injector = createInjector([
-      Engine,
-      { provide: SportsCar, useClass: SportsCar },
-      { provide: Car, useExisting: SportsCar },
-    ]);
+    const injector = createInjector([Engine, SportsCar, { provide: Car, useExisting: SportsCar }]);
 
     const car: SportsCar = injector.get(Car);
     const sportsCar: SportsCar = injector.get(SportsCar);
     expect(car).toBeAnInstanceOf(SportsCar);
     expect(car).toBe(sportsCar);
+    expect(sportsCar.engine).toBeAnInstanceOf(Engine);
   });
 
   it('should support multiProviders', () => {

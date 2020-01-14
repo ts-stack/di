@@ -29,6 +29,7 @@ import { resolveForwardRef } from './forward_ref';
  * providers.
  */
 export class ReflectiveKey {
+  public readonly displayName: string;
   /**
    * Private
    */
@@ -36,13 +37,7 @@ export class ReflectiveKey {
     if (!token) {
       throw new Error('Token must be defined!');
     }
-  }
-
-  /**
-   * Returns a stringified token.
-   */
-  get displayName(): string {
-    return stringify(this.token);
+    this.displayName = stringify(this.token);
   }
 
   /**
@@ -60,9 +55,6 @@ export class ReflectiveKey {
   }
 }
 
-/**
- * @internal
- */
 export class KeyRegistry {
   private _allKeys = new Map<Object, ReflectiveKey>();
 
@@ -72,7 +64,6 @@ export class KeyRegistry {
     }
 
     if (this._allKeys.has(token)) {
-      // tslint:disable-next-line:no-non-null-assertion
       return this._allKeys.get(token)!;
     }
 
