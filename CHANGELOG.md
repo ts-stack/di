@@ -1,5 +1,12 @@
+<a name="2.1.1"></a>
+# [2.1.1](https://github.com/KostyaTretyak/ts-di/releases/tag/2.1.1) (2020-01-14)
+
+### Bug fixes
+
+- **Type<T>** Fixed tslint auto fix
+
 <a name="2.1.0"></a>
-# [2.1.0](https://github.com/KostyaTretyak/ts-di/releases/tag/2.1.0) (2020-01-14)
+## [2.1.0](https://github.com/KostyaTretyak/ts-di/releases/tag/2.1.0) (2020-01-14)
 
 ### Feature
 
