@@ -9,12 +9,8 @@
     "declaration": true,
     "outDir": "../dist-test"
   },
-  "files": [
-    "../src/index.ts",
-    "./forward_ref.spec.ts",
-    "./injector.spec.ts",
-    "./reflective_injector.spec.ts",
-    "./reflective_key.spec.ts"
+  "include": [
+    "**/*.ts"
   ],
   "angularCompilerOptions": {
     "skipTemplateCodegen": true
