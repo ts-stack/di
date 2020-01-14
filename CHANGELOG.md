@@ -5,6 +5,10 @@
 
 - **extends parent class:** Added support DI to inherited classes.
 
+### Breaking changes
+
+- ***Class definition:** Removed support to obsolete `Class` definition.
+
 <a name="2.0.0"></a>
 ## [2.0.0](https://github.com/KostyaTretyak/ts-di/releases/tag/2.0.0) (2018-09-20)
 
