@@ -2,7 +2,7 @@
   "name": "ts-di",
   "description": "Dependency injection library for JavaScript and TypeScript",
   "author": "Костя Третяк <ktretiak.in.ua@gmail.com>",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "main": "dist/index",
   "typings": "dist/index",
   "directories": {
@@ -31,7 +31,7 @@
     "@types/node": "^10.9.4",
     "jasmine": "^3.2.0",
     "prettier": "^1.19.1",
-    "reflect-metadata": "^0.1.12",
+    "reflect-metadata": "^0.1.13",
     "rimraf": "^2.6.2",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.18.0",
@@ -39,7 +39,6 @@
     "typescript": "^3.0.3"
   },
   "scripts": {
-    "prebuild": "npm run lint",
     "compile": "rimraf dist && tsc",
     "build:test": "rimraf dist-test && tsc --project test",
     "test": "npm run build:test && jasmine",
