@@ -7,7 +7,7 @@
  */
 
 import { Reflector } from '../src/reflection/reflection';
-import { makeDecorator, makeParamDecorator, makePropDecorator } from '../src/util/decorators';
+import { makeDecorator, makeParamDecorator, makePropDecorator, makePropTypeDecorator } from '../src/util/decorators';
 import { ReflectionCapabilities, isDelegateCtor } from '../src/reflection/reflection_capabilities';
 
 interface ClassDecoratorFactory {
@@ -30,6 +30,7 @@ interface PropDecorator {
 /** @Annotation */ const ClassDecorator = makeDecorator('ClassDecorator', (data: any) => data) as ClassDecoratorFactory;
 /** @Annotation */ const ParamDecorator = makeParamDecorator('ParamDecorator', (value: any) => ({ value }));
 /** @Annotation */ const PropDecorator = makePropDecorator('PropDecorator', (value: any) => ({ value }));
+/** @Annotation */ const PropTypeDecorator = makePropTypeDecorator('PropTypeDecorator', (value: any) => ({ value }));
 
 class AType {
   constructor(public value: any) {}
@@ -45,6 +46,9 @@ class ClassWithDecorators {
 
   @PropDecorator('p3')
   set c(value: any) {}
+
+  @PropTypeDecorator('type')
+  d: number;
 
   @PropDecorator('p4')
   someMethod() {}
@@ -128,16 +132,22 @@ class TestObj {
         const p = reflector.propMetadata(ClassWithDecorators);
         expect(p.a).toEqual([new PropDecorator('p1'), new PropDecorator('p2')]);
         expect(p.c).toEqual([new PropDecorator('p3')]);
+        expect(p.d).toEqual([Number, new PropTypeDecorator('type')]);
         expect(p.someMethod).toEqual([new PropDecorator('p4')]);
       });
 
       it('should also return metadata if the class has no decorator', () => {
         class Test {
           @PropDecorator('test')
-          prop: any;
+          prop1: any;
+          @PropTypeDecorator('test type')
+          prop2: string;
         }
 
-        expect(reflector.propMetadata(Test)).toEqual({ prop: [new PropDecorator('test')] });
+        expect(reflector.propMetadata(Test)).toEqual({
+          prop1: [new PropDecorator('test')],
+          prop2: [String, new PropTypeDecorator('test type')],
+        });
       });
     });
 
@@ -351,23 +361,24 @@ class TestObj {
         class A {}
         class B {}
         class C {}
+        class D {}
 
         class Parent {
-          // TODO(issue/24571): remove '!'.
           @PropDecorator('a')
-          a!: A;
-          // TODO(issue/24571): remove '!'.
+          a: A;
           @PropDecorator('b1')
-          b!: B;
+          b: B;
+          @PropTypeDecorator('type parent')
+          d: D;
         }
 
         class Child extends Parent {
-          // TODO(issue/24571): remove '!'.
           @PropDecorator('b2')
-          b!: B;
-          // TODO(issue/24571): remove '!'.
+          b: B;
           @PropDecorator('c')
-          c!: C;
+          c: C;
+          @PropTypeDecorator('type child')
+          d: D;
         }
 
         class NoDecorators {}
@@ -376,11 +387,13 @@ class TestObj {
         expect(reflector.propMetadata(Parent)).toEqual({
           a: [new PropDecorator('a')],
           b: [new PropDecorator('b1')],
+          d: [D, new PropTypeDecorator('type parent')],
         });
 
         expect(reflector.propMetadata(Child)).toEqual({
           a: [new PropDecorator('a')],
           b: [new PropDecorator('b1'), new PropDecorator('b2')],
+          d: [D, new PropTypeDecorator('type parent'), D, new PropTypeDecorator('type child')],
           c: [new PropDecorator('c')],
         });
 

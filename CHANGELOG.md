@@ -1,5 +1,12 @@
+<a name="2.3.0"></a>
+# [2.3.0](https://github.com/KostyaTretyak/ts-di/releases/tag/2.3.0) (2020-02-12)
+
+### Feature
+
+- **exports types** Created: `makePropTypeDecorator()` (see [reflector test](test/reflector.spec.ts))
+
 <a name="2.2.0"></a>
-# [2.2.0](https://github.com/KostyaTretyak/ts-di/releases/tag/2.2.0) (2020-01-21)
+## [2.2.0](https://github.com/KostyaTretyak/ts-di/releases/tag/2.2.0) (2020-01-21)
 
 ### Feature
 

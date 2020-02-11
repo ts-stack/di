@@ -177,3 +177,51 @@ export function makePropDecorator(
   (PropDecoratorFactory as any).annotationCls = PropDecoratorFactory;
   return PropDecoratorFactory;
 }
+
+export function makePropTypeDecorator(
+  name: string,
+  props?: (...args: any[]) => any,
+  parentClass?: any,
+  additionalProcessing?: (target: any, name: string, ...args: any[]) => void
+): any {
+  const metaCtor = makeMetadataCtor(props);
+
+  function PropDecoratorFactory(this: unknown | typeof PropDecoratorFactory, ...args: any[]): any {
+    if (this instanceof PropDecoratorFactory) {
+      metaCtor.apply(this, args);
+      return this;
+    }
+
+    const decoratorInstance = new (PropDecoratorFactory as any)(...args);
+
+    function PropDecorator(target: any, name: string) {
+      const constructor = target.constructor;
+      // Use of Object.defineProperty is important since it creates non-enumerable property which
+      // prevents the property is copied during subclassing.
+      const meta = constructor.hasOwnProperty(PROP_METADATA)
+        ? (constructor as any)[PROP_METADATA]
+        : Object.defineProperty(constructor, PROP_METADATA, { value: {} })[PROP_METADATA];
+      meta[name] = (meta.hasOwnProperty(name) && meta[name]) || [];
+      const type = (Reflect as any)?.getMetadata('design:type', target, name);
+      if (meta[name][0] === type) {
+        meta[name].splice(0, 1, ...[type, decoratorInstance]);
+      } else {
+        meta[name].unshift(type, decoratorInstance);
+      }
+
+      if (additionalProcessing) {
+        additionalProcessing(target, name, ...args);
+      }
+    }
+
+    return PropDecorator;
+  }
+
+  if (parentClass) {
+    PropDecoratorFactory.prototype = Object.create(parentClass.prototype);
+  }
+
+  PropDecoratorFactory.prototype.ngMetadataName = name;
+  (PropDecoratorFactory as any).annotationCls = PropDecoratorFactory;
+  return PropDecoratorFactory;
+}

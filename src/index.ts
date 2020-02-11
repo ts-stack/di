@@ -25,6 +25,12 @@ export { ResolvedReflectiveFactory, ResolvedReflectiveProvider } from './di/refl
 export { ReflectiveKey } from './di/reflective_key';
 export { InjectionToken } from './di/injection_token';
 
-export { TypeDecorator, makeDecorator, makeParamDecorator, makePropDecorator } from './util/decorators';
+export {
+  TypeDecorator,
+  makeDecorator,
+  makeParamDecorator,
+  makePropDecorator,
+  makePropTypeDecorator,
+} from './util/decorators';
 export { reflector } from './reflection/reflection';
 export { Type } from './type';
