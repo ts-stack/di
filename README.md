@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/KostyaTretyak/ts-di.svg?branch=master)](https://travis-ci.org/KostyaTretyak/ts-di)
-
 Dependency injection library for JavaScript and TypeScript. It is an extraction of the Angular's dependency injection which means that it's feature complete, fast, reliable and well tested. Also - retrieve all API documentation with example code.
 
 Up-to-date with Angular 4.4.7, but with support DI to inherited class (when the child class does not have a constructor, while the parent class has it), and with exported `makeDecorator()`, `makeParamDecorator()`, `makePropDecorator()`, `reflector`, `Type` (see [reflector test](test/reflector.spec.ts)).
@@ -7,7 +5,7 @@ Up-to-date with Angular 4.4.7, but with support DI to inherited class (when the 
 ## Install
 
 ```bash
-npm i ts-di
+npm i @ts-stack/di
 ```
 
 Also you need to install `reflect-metadata` module:
@@ -32,7 +30,7 @@ Then, in `tsconfig.json` file, for `compilerOptions` you need to set `experiment
 
 ```ts
 import 'reflect-metadata';
-import { ReflectiveInjector, Injectable } from 'ts-di';
+import { ReflectiveInjector, Injectable } from '@ts-stack/di';
 
 @Injectable()
 class UsefulService {
@@ -49,7 +47,7 @@ expect(needsService instanceof NeedsService).toBe(true);
 expect(needsService.service instanceof UsefulService).toBe(true);
 ```
 
-For more examples, see the [tests for ts-di](test/reflective_injector.spec.ts).
+For more examples, see the [tests for @ts-stack/di](test/reflective_injector.spec.ts).
 
 ## API
 

@@ -1,17 +1,17 @@
 {
-  "name": "ts-di",
+  "name": "@ts-stack/di",
   "description": "Dependency injection library for JavaScript and TypeScript",
   "author": "Костя Третяк <ktretiak.in.ua@gmail.com>",
-  "version": "2.3.0",
+  "version": "1.0.0",
   "main": "dist/index",
   "typings": "dist/index",
   "directories": {
     "lib": "src"
   },
-  "repository": "https://github.com/KostyaTretyak/ts-di.git",
-  "homepage": "https://github.com/KostyaTretyak/ts-di",
+  "repository": "https://github.com/ts-stack/di.git",
+  "homepage": "https://github.com/ts-stack/di",
   "bugs": {
-    "url": "http://github.com/KostyaTretyak/ts-di/issues"
+    "url": "http://github.com/ts-stack/di/issues"
   },
   "license": "MIT",
   "keywords": [
