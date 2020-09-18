@@ -2,7 +2,7 @@
   "name": "@ts-stack/di",
   "description": "Dependency injection library for JavaScript and TypeScript",
   "author": "Костя Третяк <ktretiak.in.ua@gmail.com>",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "dist/index",
   "typings": "dist/index",
   "directories": {
