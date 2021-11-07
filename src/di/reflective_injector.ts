@@ -6,10 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-function fake() {
-  /* unused function to prevent the license merging with comments */
-}
-
 import { Injector, THROW_IF_NOT_FOUND } from './injector';
 import { Self, SkipSelf } from './metadata';
 import { Provider } from './provider';
@@ -275,6 +271,17 @@ expect(car).not.toBe(injector.instantiateResolved(carProvider));
   abstract instantiateResolved(provider: ResolvedReflectiveProvider): any;
 
   abstract get(token: any, notFoundValue?: any): any;
+
+  /**
+   * ### Usage
+   *
+```ts
+injector.addSibling(externalInjector1, [Provider1, Provider2, Provider3]);
+injector.addSibling(externalInjector2, [Provider4, Provider5, Provider6]);
+// ...
+```
+   */
+  abstract addSibling(externalInjector: ReflectiveInjector, providers: Provider[]): void;
 }
 
 export class ReflectiveInjector_ implements ReflectiveInjector {
@@ -287,6 +294,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
 
   keyIds: number[];
   objs: any[];
+  protected _siblings = new Map<Provider, ReflectiveInjector>();
   /**
    * Private
    */
@@ -303,6 +311,12 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
       this.keyIds[i] = _providers[i].key.id;
       this.objs[i] = UNDEFINED;
     }
+  }
+
+  addSibling(externalInjector: ReflectiveInjector, providers: Provider[]): void {
+    providers.forEach(provider => {
+      this._siblings.set(provider, externalInjector);
+    })
   }
 
   get(token: any, notFoundValue: any = THROW_IF_NOT_FOUND): any {
