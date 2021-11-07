@@ -2,7 +2,7 @@
   "name": "@ts-stack/di",
   "description": "Dependency injection library for JavaScript and TypeScript",
   "author": "Костя Третяк <ktretiak.in.ua@gmail.com>",
-  "version": "1.1.0",
+  "version": "1.2.0-beta.1",
   "main": "dist/index",
   "typings": "src/index",
   "directories": {
@@ -39,7 +39,7 @@
     "typescript": "^4.4.4"
   },
   "scripts": {
-    "compile": "rimraf dist/* && tsc",
+    "build": "rimraf dist/* && tsc",
     "build:test": "rimraf dist-test/* && tsc --project test",
     "test": "npm run build:test && jasmine",
     "tslint": "tslint --project tsconfig.json --fix"

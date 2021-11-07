@@ -542,3 +542,19 @@ describe('displayName', () => {
     expect(injector.displayName).toEqual('ReflectiveInjector(providers: [ "Engine" ,  "BrokenEngine" ])');
   });
 });
+
+describe(`injector's siblings`, () => {
+  it('should not to throw when provider has valid sibling', () => {
+    const currentInjector = createInjector([CarWithDashboard, Engine]);
+    const externalInjector = createInjector([Dashboard, DashboardSoftware]);
+    currentInjector.addSibling(externalInjector, [Dashboard]);
+    expect(() => currentInjector.get(CarWithDashboard)).not.toThrowError();
+  });
+
+  it('should to throw when sibling can not resolve dependencies', () => {
+    const currentInjector = createInjector([CarWithDashboard, Engine]);
+    const externalInjector = createInjector([Dashboard]);
+    currentInjector.addSibling(externalInjector, [Dashboard]);
+    expect(() => currentInjector.get(CarWithDashboard)).toThrowError(/No provider for DashboardSoftware/);
+  });
+});

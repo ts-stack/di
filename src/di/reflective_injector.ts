@@ -9,7 +9,7 @@
 import { Injector, THROW_IF_NOT_FOUND } from './injector';
 import { Self, SkipSelf } from './metadata';
 import { Provider } from './provider';
-import { cyclicDependencyError, instantiationError, noProviderError, outOfBoundsError } from './reflective_errors';
+import { cyclicDependencyError, InjectionError, instantiationError, noProviderError, outOfBoundsError } from './reflective_errors';
 import { ReflectiveKey } from './reflective_key';
 import {
   ReflectiveDependency,
@@ -292,9 +292,12 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   /** @internal */
   public _parent: Injector | null;
 
-  keyIds: number[];
-  objs: any[];
-  protected _siblings = new Map<Provider, ReflectiveInjector>();
+  protected keyIds: number[];
+  protected objs: any[];
+  /**
+   * Siblings injectors.
+   */
+  protected siblings = new Map<any, ReflectiveInjector>();
   /**
    * Private
    */
@@ -315,7 +318,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
 
   addSibling(externalInjector: ReflectiveInjector, providers: Provider[]): void {
     providers.forEach(provider => {
-      this._siblings.set(provider, externalInjector);
+      this.siblings.set(provider, externalInjector);
     })
   }
 
@@ -388,7 +391,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
       deps = ResolvedReflectiveFactory.dependencies.map(dep => this._getByReflectiveDependency(dep));
     } catch (e) {
       if (e.addKey) {
-        e.addKey(this, provider.key);
+        (e as InjectionError).addKey(this, provider.key);
       }
       throw e;
     }
@@ -433,8 +436,12 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     return UNDEFINED;
   }
 
-  /** @internal */
-  _throwOrNull(key: ReflectiveKey, notFoundValue: any): any {
+  protected findInSiblingsOrThrow(key: ReflectiveKey, notFoundValue: any): any {
+    const sibling = this.siblings.get(key.token);
+    if (sibling) {
+      return sibling.get(key.token);
+    }
+
     if (notFoundValue !== THROW_IF_NOT_FOUND) {
       return notFoundValue;
     } else {
@@ -445,7 +452,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   /** @internal */
   _getByKeySelf(key: ReflectiveKey, notFoundValue: any): any {
     const obj = this._getObjByKeyId(key.id);
-    return obj !== UNDEFINED ? obj : this._throwOrNull(key, notFoundValue);
+    return obj !== UNDEFINED ? obj : this.findInSiblingsOrThrow(key, notFoundValue);
   }
 
   /** @internal */
@@ -469,7 +476,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     if (inj !== null) {
       return inj.get(key.token, notFoundValue);
     } else {
-      return this._throwOrNull(key, notFoundValue);
+      return this.findInSiblingsOrThrow(key, notFoundValue);
     }
   }
 
