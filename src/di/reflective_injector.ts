@@ -281,7 +281,7 @@ injector.addSibling(externalInjector2, [Provider4, Provider5, Provider6]);
 // ...
 ```
    */
-  abstract addSibling(externalInjector: ReflectiveInjector, providers: Provider[]): void;
+  abstract addSibling(externalInjector: ReflectiveInjector, tokens: any[]): void;
 }
 
 export class ReflectiveInjector_ implements ReflectiveInjector {
@@ -316,9 +316,9 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     }
   }
 
-  addSibling(externalInjector: ReflectiveInjector, providers: Provider[]): void {
-    providers.forEach(provider => {
-      this.siblings.set(provider, externalInjector);
+  addSibling(externalInjector: ReflectiveInjector, tokens: any[]): void {
+    tokens.forEach(token => {
+      this.siblings.set(token, externalInjector);
     })
   }
 

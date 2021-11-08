@@ -1,5 +1,24 @@
+<a name="1.2.0-beta.2"></a>
+# [1.2.0-beta.2](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.2) (2020-11-08)
+
+### Bug fix
+
+- Fixed `injector.addSibling()` call signature.
+
+Before:
+
+```ts
+addSibling(externalInjector: ReflectiveInjector, providers: Providers[]): void;
+```
+
+Now:
+
+```ts
+addSibling(externalInjector: ReflectiveInjector, tokens: any[]): void;
+```
+
 <a name="1.2.0-beta.1"></a>
-# [1.2.0-beta.1](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.1) (2020-11-07)
+## [1.2.0-beta.1](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.1) (2020-11-07)
 
 ### Features
 
