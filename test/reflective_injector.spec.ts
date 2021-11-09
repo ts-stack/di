@@ -544,11 +544,27 @@ describe('displayName', () => {
 });
 
 describe(`injector's siblings`, () => {
-  it('should not to throw when provider has valid sibling', () => {
+  it('should not to throw when current injector has valid sibling', () => {
     const currentInjector = createInjector([CarWithDashboard, Engine]);
     const externalInjector = createInjector([Dashboard, DashboardSoftware]);
     currentInjector.addSibling(externalInjector, [Dashboard]);
     expect(() => currentInjector.get(CarWithDashboard)).not.toThrowError();
+  });
+
+  it('should not to throw when parent injector has valid sibling', () => {
+    const parentInjector = createInjector([Engine]);
+    const currentInjector = parentInjector.resolveAndCreateChild([CarWithDashboard]);
+    const externalInjector = createInjector([Dashboard, DashboardSoftware]);
+    parentInjector.addSibling(externalInjector, [Dashboard]);
+    expect(() => currentInjector.get(CarWithDashboard)).not.toThrowError();
+  });
+
+  it('should to throw when only child has siblings with needed dependencies', () => {
+    const currentInjector = createInjector([CarWithDashboard, Engine]);
+    const child = currentInjector.resolveAndCreateChild([]);
+    const externalInjector = createInjector([Dashboard, DashboardSoftware]);
+    child.addSibling(externalInjector, [Dashboard]);
+    expect(() => currentInjector.get(CarWithDashboard)).toThrowError(/No provider for Dashboard/);
   });
 
   it('should to throw when sibling can not resolve dependencies', () => {

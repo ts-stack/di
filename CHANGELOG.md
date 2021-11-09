@@ -1,5 +1,13 @@
+<a name="1.2.0-beta.3"></a>
+# [1.2.0-beta.3](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.3) (2020-11-09)
+
+### Features
+
+- Added the ability for the injector to search tokens first in siblings and only then proceed
+to search in the parent injectors.
+
 <a name="1.2.0-beta.2"></a>
-# [1.2.0-beta.2](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.2) (2020-11-08)
+## [1.2.0-beta.2](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.2) (2020-11-08)
 
 ### Bug fix
 

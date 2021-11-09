@@ -316,7 +316,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     }
   }
 
-  addSibling(externalInjector: ReflectiveInjector, tokens: any[]): void {
+  addSibling(externalInjector: this, tokens: any[]): void {
     tokens.forEach(token => {
       this.siblings.set(token, externalInjector);
     })
@@ -437,11 +437,6 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   }
 
   protected _throwOrNull(key: ReflectiveKey, notFoundValue: any): any {
-    const sibling = this.siblings.get(key.token);
-    if (sibling) {
-      return sibling.get(key.token);
-    }
-
     if (notFoundValue !== THROW_IF_NOT_FOUND) {
       return notFoundValue;
     } else {
@@ -452,7 +447,14 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   /** @internal */
   _getByKeySelf(key: ReflectiveKey, notFoundValue: any): any {
     const obj = this._getObjByKeyId(key.id);
-    return obj !== UNDEFINED ? obj : this._throwOrNull(key, notFoundValue);
+      if (obj !== UNDEFINED) {
+        return obj;
+      }
+      const sibling = this.siblings.get(key.token);
+      if (sibling) {
+        return sibling.get(key.token);
+      }
+    return this._throwOrNull(key, notFoundValue);
   }
 
   /** @internal */
@@ -470,6 +472,10 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
       const obj = inj_._getObjByKeyId(key.id);
       if (obj !== UNDEFINED) {
         return obj;
+      }
+      const sibling = inj_.siblings.get(key.token);
+      if (sibling) {
+        return sibling.get(key.token);
       }
       inj = inj_._parent;
     }
