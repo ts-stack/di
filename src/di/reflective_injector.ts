@@ -436,7 +436,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     return UNDEFINED;
   }
 
-  protected findInSiblingsOrThrow(key: ReflectiveKey, notFoundValue: any): any {
+  protected _throwOrNull(key: ReflectiveKey, notFoundValue: any): any {
     const sibling = this.siblings.get(key.token);
     if (sibling) {
       return sibling.get(key.token);
@@ -452,7 +452,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   /** @internal */
   _getByKeySelf(key: ReflectiveKey, notFoundValue: any): any {
     const obj = this._getObjByKeyId(key.id);
-    return obj !== UNDEFINED ? obj : this.findInSiblingsOrThrow(key, notFoundValue);
+    return obj !== UNDEFINED ? obj : this._throwOrNull(key, notFoundValue);
   }
 
   /** @internal */
@@ -476,7 +476,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     if (inj !== null) {
       return inj.get(key.token, notFoundValue);
     } else {
-      return this.findInSiblingsOrThrow(key, notFoundValue);
+      return this._throwOrNull(key, notFoundValue);
     }
   }
 
