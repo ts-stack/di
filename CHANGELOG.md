@@ -1,5 +1,5 @@
 <a name="1.2.0-beta.3"></a>
-# [1.2.0-beta.3](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.3) (2020-11-09)
+# [1.2.0-beta.3](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.3) (2021-11-09)
 
 ### Features
 
@@ -7,7 +7,7 @@
 to search in the parent injectors.
 
 <a name="1.2.0-beta.2"></a>
-## [1.2.0-beta.2](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.2) (2020-11-08)
+## [1.2.0-beta.2](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.2) (2021-11-08)
 
 ### Bug fix
 
@@ -26,7 +26,7 @@ addSibling(externalInjector: ReflectiveInjector, tokens: any[]): void;
 ```
 
 <a name="1.2.0-beta.1"></a>
-## [1.2.0-beta.1](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.1) (2020-11-07)
+## [1.2.0-beta.1](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.1) (2021-11-07)
 
 ### Features
 
