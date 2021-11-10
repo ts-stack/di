@@ -1,5 +1,24 @@
+<a name="1.2.0-beta.4"></a>
+# [1.2.0-beta.4](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.4) (2021-11-10)
+
+### Features
+
+- Added `injector.setSiblingsMap()`. Usage:
+
+```ts
+const map = new Map<any, ReflectiveInjector>();
+map.set(token1, externalInjector1);
+map.set(token2, externalInjector1);
+map.set(token3, externalInjector1);
+
+map.set(token4, externalInjector2);
+map.set(token5, externalInjector2);
+//...
+injector.setSiblingsMap(map);
+```
+
 <a name="1.2.0-beta.3"></a>
-# [1.2.0-beta.3](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.3) (2021-11-09)
+## [1.2.0-beta.3](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.3) (2021-11-09)
 
 ### Features
 

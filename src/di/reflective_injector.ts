@@ -276,12 +276,29 @@ expect(car).not.toBe(injector.instantiateResolved(carProvider));
    * ### Usage
    *
 ```ts
-injector.addSibling(externalInjector1, [Provider1, Provider2, Provider3]);
-injector.addSibling(externalInjector2, [Provider4, Provider5, Provider6]);
-// ...
+injector.addSibling(externalInjector1, [token1, token2, token3]);
+injector.addSibling(externalInjector2, [token4, token5, token6]);
 ```
    */
   abstract addSibling(externalInjector: ReflectiveInjector, tokens: any[]): void;
+  /**
+   * Sets siblings map between token and injector.
+   *
+   * ### Usage
+   *
+```ts
+const map = new Map<any, ReflectiveInjector>();
+map.set(token1, externalInjector1);
+map.set(token2, externalInjector1);
+map.set(token3, externalInjector1);
+
+map.set(token4, externalInjector2);
+map.set(token5, externalInjector2);
+//...
+injector.setSiblingsMap(map);
+```
+   */
+  abstract setSiblingsMap(map: Map<any, ReflectiveInjector>): void;
 }
 
 export class ReflectiveInjector_ implements ReflectiveInjector {
@@ -297,7 +314,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   /**
    * Siblings injectors.
    */
-  protected siblings = new Map<any, ReflectiveInjector>();
+  protected siblings: Map<any, ReflectiveInjector>;
   /**
    * Private
    */
@@ -316,7 +333,14 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     }
   }
 
+  setSiblingsMap(map: Map<any, ReflectiveInjector>): void {
+    this.siblings = map;
+  }
+
   addSibling(externalInjector: this, tokens: any[]): void {
+    if (!this.siblings) {
+      this.siblings = new Map();
+    }
     tokens.forEach(token => {
       this.siblings.set(token, externalInjector);
     })
@@ -450,7 +474,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
       if (obj !== UNDEFINED) {
         return obj;
       }
-      const sibling = this.siblings.get(key.token);
+      const sibling = this.siblings?.get(key.token);
       if (sibling) {
         return sibling.get(key.token);
       }
@@ -473,7 +497,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
       if (obj !== UNDEFINED) {
         return obj;
       }
-      const sibling = inj_.siblings.get(key.token);
+      const sibling = inj_.siblings?.get(key.token);
       if (sibling) {
         return sibling.get(key.token);
       }

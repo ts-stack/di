@@ -543,7 +543,7 @@ describe('displayName', () => {
   });
 });
 
-describe(`injector's siblings`, () => {
+describe(`injector.addSibling()`, () => {
   it('should not to throw when current injector has valid sibling', () => {
     const currentInjector = createInjector([CarWithDashboard, Engine]);
     const externalInjector = createInjector([Dashboard, DashboardSoftware]);
@@ -571,6 +571,47 @@ describe(`injector's siblings`, () => {
     const currentInjector = createInjector([CarWithDashboard, Engine]);
     const externalInjector = createInjector([Dashboard]);
     currentInjector.addSibling(externalInjector, [Dashboard]);
+    expect(() => currentInjector.get(CarWithDashboard)).toThrowError(/No provider for DashboardSoftware/);
+  });
+});
+
+describe(`injector.setSiblingsMap()`, () => {
+  let map: Map<any, ReflectiveInjector>;
+  beforeEach(() => {
+    map = new Map<any, ReflectiveInjector>();
+  });
+
+  it('should not to throw when current injector has valid sibling', () => {
+    const currentInjector = createInjector([CarWithDashboard, Engine]);
+    const externalInjector = createInjector([Dashboard, DashboardSoftware]);
+    map.set(Dashboard, externalInjector);
+    currentInjector.setSiblingsMap(map);
+    expect(() => currentInjector.get(CarWithDashboard)).not.toThrowError();
+  });
+
+  it('should not to throw when parent injector has valid sibling', () => {
+    const parentInjector = createInjector([Engine]);
+    const currentInjector = parentInjector.resolveAndCreateChild([CarWithDashboard]);
+    const externalInjector = createInjector([Dashboard, DashboardSoftware]);
+    map.set(Dashboard, externalInjector);
+    parentInjector.setSiblingsMap(map);
+    expect(() => currentInjector.get(CarWithDashboard)).not.toThrowError();
+  });
+
+  it('should to throw when only child has siblings with needed dependencies', () => {
+    const currentInjector = createInjector([CarWithDashboard, Engine]);
+    const child = currentInjector.resolveAndCreateChild([]);
+    const externalInjector = createInjector([Dashboard, DashboardSoftware]);
+    map.set(Dashboard, externalInjector);
+    child.setSiblingsMap(map);
+    expect(() => currentInjector.get(CarWithDashboard)).toThrowError(/No provider for Dashboard/);
+  });
+
+  it('should to throw when sibling can not resolve dependencies', () => {
+    const currentInjector = createInjector([CarWithDashboard, Engine]);
+    const externalInjector = createInjector([Dashboard]);
+    map.set(Dashboard, externalInjector);
+    currentInjector.setSiblingsMap(map);
     expect(() => currentInjector.get(CarWithDashboard)).toThrowError(/No provider for DashboardSoftware/);
   });
 });
