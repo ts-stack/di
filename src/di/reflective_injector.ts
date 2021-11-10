@@ -162,7 +162,7 @@ expect(child.parent).toBe(parent);
    *
    * See [Hierarchical Dependency Injectors](https://v4.angular.io/guide/hierarchical-dependency-injection)
    */
-  abstract get parent(): Injector | null;
+  abstract parent: Injector | null;
 
   /**
    * Resolves an array of providers and creates a child injector from those providers.
@@ -330,6 +330,10 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
 
   get parent(): Injector | null {
     return this._parent;
+  }
+
+  set parent(val) {
+    this._parent = val;
   }
 
   resolveAndCreateChild(providers: Provider[]): ReflectiveInjector {

@@ -1,5 +1,16 @@
+<a name="1.2.0-beta.5"></a>
+# [1.2.0-beta.5](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.5) (2021-11-10)
+
+### Breaking Changes
+
+- Removed `injector.setSiblingsMap()`.
+
+### Features
+
+- Added the ability for the injector to set parent after child is created.
+
 <a name="1.2.0-beta.4"></a>
-# [1.2.0-beta.4](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.4) (2021-11-10)
+## [1.2.0-beta.4](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.4) (2021-11-10)
 
 ### Features
 

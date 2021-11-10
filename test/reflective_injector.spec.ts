@@ -574,3 +574,12 @@ describe(`injector.addSibling()`, () => {
     expect(() => currentInjector.get(CarWithDashboard)).toThrowError(/No provider for DashboardSoftware/);
   });
 });
+
+describe(`child.parent = parent`, () => {
+  it('should work when parent is created after child', () => {
+    const child = createInjector([CarWithDashboard, Engine]);
+    const parent = createInjector([Dashboard, DashboardSoftware]);
+    child.parent = parent;
+    expect(() => child.get(CarWithDashboard)).not.toThrow();
+  });
+});
