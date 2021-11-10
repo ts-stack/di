@@ -281,11 +281,12 @@ injector.addSibling(externalInjector2, [token4, token5, token6]);
 ```
    */
   abstract addSibling(externalInjector: ReflectiveInjector, tokens: any[]): void;
+  abstract clearCache(): void;
 }
 
 export class ReflectiveInjector_ implements ReflectiveInjector {
   /** @internal */
-  _constructionCounter = 0;
+  _constructionCounter: number;
   /** @internal */
   public _providers: ResolvedReflectiveProvider[];
   /** @internal */
@@ -304,13 +305,17 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     this._providers = _providers;
     this._parent = _parent || null;
 
-    const len = _providers.length;
+    this.clearCache();
+  }
 
+  clearCache() {
+    this._constructionCounter = 0;
+    const len = this._providers.length;
     this.keyIds = new Array(len);
     this.objs = new Array(len);
 
     for (let i = 0; i < len; i++) {
-      this.keyIds[i] = _providers[i].key.id;
+      this.keyIds[i] = this._providers[i].key.id;
       this.objs[i] = UNDEFINED;
     }
   }

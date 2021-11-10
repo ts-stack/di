@@ -583,3 +583,14 @@ describe(`child.parent = parent`, () => {
     expect(() => child.get(CarWithDashboard)).not.toThrow();
   });
 });
+
+describe(`injector.clearCache()`, () => {
+  it('should clear cache', () => {
+    const injector = ReflectiveInjector.resolveAndCreate([Engine]);
+
+    const engine = injector.get(Engine);
+    expect(engine).toBe(injector.get(Engine));
+    injector.clearCache();
+    expect(engine).not.toBe(injector.get(Engine));
+  });
+});

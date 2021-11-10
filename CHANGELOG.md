@@ -1,5 +1,12 @@
+<a name="1.2.0-beta.6"></a>
+# [1.2.0-beta.6](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.6) (2021-11-10)
+
+### Features
+
+- Added `injector.clearCache()`.
+
 <a name="1.2.0-beta.5"></a>
-# [1.2.0-beta.5](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.5) (2021-11-10)
+## [1.2.0-beta.5](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.5) (2021-11-10)
 
 ### Breaking Changes
 
