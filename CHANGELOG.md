@@ -1,5 +1,12 @@
+<a name="1.2.0-beta.7"></a>
+# [1.2.0-beta.7](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.7) (2021-11-11)
+
+### Features
+
+- Added `Error.captureStackTrace()` to clear internal error trace.
+
 <a name="1.2.0-beta.6"></a>
-# [1.2.0-beta.6](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.6) (2021-11-10)
+## [1.2.0-beta.6](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.6) (2021-11-10)
 
 ### Features
 
