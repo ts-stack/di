@@ -1,5 +1,12 @@
+<a name="1.2.0-rc.1"></a>
+# [1.2.0-rc.1](https://github.com/ts-stack/di/releases/tag/1.2.0-rc.1) (2021-11-11)
+
+### Performance Improvements
+
+- Migrating injectors from array search to object search should improve their performance (more than three times).
+
 <a name="1.2.0-beta.8"></a>
-# [1.2.0-beta.8](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.8) (2021-11-11)
+## [1.2.0-beta.8](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.8) (2021-11-11)
 
 ### Bug fixes
 

@@ -594,3 +594,45 @@ describe(`injector.clearCache()`, () => {
     expect(engine).not.toBe(injector.get(Engine));
   });
 });
+
+describe(`null as provider's value`, () => {
+  it(`should works with "undefined"`, () => {
+    const injector = ReflectiveInjector.resolveAndCreate([{provide: Engine, useValue: undefined }]);
+
+    expect(() => {
+      injector.get(Engine); // Create cache
+      injector.get(Engine); // Get from cache
+    }).not.toThrow();
+    expect(injector.get(Engine)).toBe(undefined);
+  });
+
+  it(`should works with "null"`, () => {
+    const injector = ReflectiveInjector.resolveAndCreate([{provide: Engine, useValue: null }]);
+
+    expect(() => {
+      injector.get(Engine); // Create cache
+      injector.get(Engine); // Get from cache
+    }).not.toThrow();
+    expect(injector.get(Engine)).toBe(null);
+  });
+
+  it(`should works with "0"`, () => {
+    const injector = ReflectiveInjector.resolveAndCreate([{provide: Engine, useValue: 0 }]);
+
+    expect(() => {
+      injector.get(Engine); // Create cache
+      injector.get(Engine); // Get from cache
+    }).not.toThrow();
+    expect(injector.get(Engine)).toBe(0);
+  });
+
+  it(`should works with ""`, () => {
+    const injector = ReflectiveInjector.resolveAndCreate([{provide: Engine, useValue: '' }]);
+
+    expect(() => {
+      injector.get(Engine); // Create cache
+      injector.get(Engine); // Get from cache
+    }).not.toThrow();
+    expect(injector.get(Engine)).toBe('');
+  });
+});

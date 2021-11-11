@@ -15,6 +15,7 @@ import {
   ReflectiveDependency,
   ResolvedReflectiveFactory,
   ResolvedReflectiveProvider,
+  ResolvedReflectiveProvider_,
   resolveReflectiveProviders,
 } from './reflective_provider';
 
@@ -292,8 +293,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   /** @internal */
   public _parent: Injector | null;
 
-  protected keyIds: number[];
-  protected objs: any[];
+  protected map: { [keyId: number]: any } = {};
   /**
    * Siblings injectors.
    */
@@ -310,14 +310,9 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
 
   clearCache() {
     this._constructionCounter = 0;
-    const len = this._providers.length;
-    this.keyIds = new Array(len);
-    this.objs = new Array(len);
-
-    for (let i = 0; i < len; i++) {
-      this.keyIds[i] = this._providers[i].key.id;
-      this.objs[i] = UNDEFINED;
-    }
+    this._providers.forEach(p => {
+      this.map[p.key.id] = p;
+    });
   }
 
   addSibling(externalInjector: this, tokens: any[]): void {
@@ -376,7 +371,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   }
 
   private _getMaxNumberOfObjects(): number {
-    return this.objs.length;
+    return this._providers.length;
   }
 
   private _instantiateProvider(provider: ResolvedReflectiveProvider): any {
@@ -434,17 +429,14 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   }
 
   private _getObjByKeyId(keyId: number): any {
-    for (let i = 0; i < this.keyIds.length; i++) {
-      if (this.keyIds[i] === keyId) {
-        if (this.objs[i] === UNDEFINED) {
-          this.objs[i] = this._new(this._providers[i]);
-        }
-
-        return this.objs[i];
-      }
+    const obj = this.map[keyId];
+    if (!obj && !this.map.hasOwnProperty(keyId)) {
+      return UNDEFINED;
     }
-
-    return UNDEFINED;
+    if (obj instanceof ResolvedReflectiveProvider_) {
+      return this.map[keyId] = this._new(obj);
+    }
+    return obj;
   }
 
   protected _throwOrNull(key: ReflectiveKey, notFoundValue: any): any {
