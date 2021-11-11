@@ -451,7 +451,9 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     if (notFoundValue !== THROW_IF_NOT_FOUND) {
       return notFoundValue;
     } else {
-      throw noProviderError(this, key);
+      const error = noProviderError(this, key);
+      Error.captureStackTrace(error, this._instantiate);
+      throw error;
     }
   }
 

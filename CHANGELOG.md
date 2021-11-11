@@ -1,5 +1,12 @@
+<a name="1.2.0-beta.8"></a>
+# [1.2.0-beta.8](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.8) (2021-11-11)
+
+### Bug fixes
+
+- Fixed `Error.captureStackTrace()` location.
+
 <a name="1.2.0-beta.7"></a>
-# [1.2.0-beta.7](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.7) (2021-11-11)
+## [1.2.0-beta.7](https://github.com/ts-stack/di/releases/tag/1.2.0-beta.7) (2021-11-11)
 
 ### Features
 
