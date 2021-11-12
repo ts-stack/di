@@ -443,18 +443,8 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     if (notFoundValue !== THROW_IF_NOT_FOUND) {
       return notFoundValue;
     } else {
-      throw this.clearErrorTrace(noProviderError(this, key));
+      throw noProviderError(this, key);
     }
-  }
-
-  protected clearErrorTrace(error: any) {
-    const stack: string = error.stack;
-    const str = 'ReflectiveInjector_.';
-    const lastIndex = stack.lastIndexOf(str);
-    const part = stack.substring(lastIndex);
-    const methodName = part.substring(str.length, part.indexOf(' '));
-    Error.captureStackTrace(error, (this as any)[methodName]);
-    return error;
   }
 
   /** @internal */

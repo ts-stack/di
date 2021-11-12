@@ -11,7 +11,7 @@ import { ERROR_ORIGINAL_ERROR } from '../errors';
 import { Type } from '../type';
 import { stringify } from '../util';
 
-import { ReflectiveInjector } from './reflective_injector';
+import { ReflectiveInjector, ReflectiveInjector_ } from './reflective_injector';
 import { ReflectiveKey } from './reflective_key';
 
 function findFirstClosedCycle(keys: any[]): any[] {
@@ -57,6 +57,20 @@ function injectionError(
   error.injectors = [injector];
   error.constructResolvingMessage = constructResolvingMessage;
   (error as any)[ERROR_ORIGINAL_ERROR] = originalError;
+  clearErrorTrace(error);
+  return error;
+}
+
+function clearErrorTrace(error: any) {
+  const stack: string = error.stack;
+  const str = 'ReflectiveInjector_.';
+  const lastIndex = stack.lastIndexOf(str);
+  const part = stack.substring(lastIndex);
+  const methodName = part.substring(str.length, part.indexOf(' '));
+  Error.captureStackTrace(error, (ReflectiveInjector_.prototype as any)[methodName]);
+  if (error[ERROR_ORIGINAL_ERROR]) {
+    clearErrorTrace(error[ERROR_ORIGINAL_ERROR]);
+  }
   return error;
 }
 
