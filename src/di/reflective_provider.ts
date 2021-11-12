@@ -185,20 +185,20 @@ export function mergeResolvedReflectiveProviders(
   return normalizedProvidersMap;
 }
 
-function _normalizeProviders(providers: Provider[], res: Provider[]): Provider[] {
-  providers.forEach(b => {
-    if (b instanceof Type) {
-      res.push({ provide: b, useClass: b });
-    } else if (b && typeof b == 'object' && (b as any).provide !== undefined) {
-      res.push(b as NormalizedProvider);
-    } else if (b instanceof Array) {
-      _normalizeProviders(b, res);
+function _normalizeProviders(providers: Provider[], normProviders: NormalizedProvider[]): NormalizedProvider[] {
+  providers.forEach(provider => {
+    if (provider instanceof Type) {
+      normProviders.push({ provide: provider, useClass: provider } as NormalizedProvider);
+    } else if (provider && typeof provider == 'object' && (provider as any).provide !== undefined) {
+      normProviders.push(provider as NormalizedProvider);
+    } else if (provider instanceof Array) {
+      _normalizeProviders(provider, normProviders);
     } else {
-      throw invalidProviderError(b);
+      throw invalidProviderError(provider);
     }
   });
 
-  return res;
+  return normProviders;
 }
 
 export function constructDependencies(typeOrFunc: any, dependencies?: any[]): ReflectiveDependency[] {

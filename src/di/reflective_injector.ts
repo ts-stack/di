@@ -395,7 +395,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     let deps: any[];
     try {
       deps = ResolvedReflectiveFactory.dependencies.map(dep => this._getByReflectiveDependency(dep));
-    } catch (e) {
+    } catch (e: any) {
       if (e.addKey) {
         (e as InjectionError).addKey(this, provider.key);
       }
@@ -405,7 +405,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     let obj: any;
     try {
       obj = factory(...deps);
-    } catch (e) {
+    } catch (e: any) {
       throw instantiationError(this, e, e.stack, provider.key);
     }
 
