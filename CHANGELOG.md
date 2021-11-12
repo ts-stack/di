@@ -1,5 +1,5 @@
 <a name="1.2.0-rc.2"></a>
-# [1.2.0-rc.2](https://github.com/ts-stack/di/releases/tag/1.2.0-rc.2) (2021-11-11)
+# [1.2.0-rc.2](https://github.com/ts-stack/di/releases/tag/1.2.0-rc.2) (2021-11-12)
 
 ### Features
 
