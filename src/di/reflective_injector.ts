@@ -9,7 +9,13 @@
 import { Injector, THROW_IF_NOT_FOUND } from './injector';
 import { Self, SkipSelf } from './metadata';
 import { Provider } from './provider';
-import { cyclicDependencyError, InjectionError, instantiationError, noProviderError, outOfBoundsError } from './reflective_errors';
+import {
+  cyclicDependencyError,
+  InjectionError,
+  instantiationError,
+  noProviderError,
+  outOfBoundsError,
+} from './reflective_errors';
 import { ReflectiveKey } from './reflective_key';
 import {
   ReflectiveDependency,
@@ -274,6 +280,12 @@ expect(car).not.toBe(injector.instantiateResolved(carProvider));
   abstract get(token: any, notFoundValue?: any): any;
 
   /**
+   * Adds an external injector to the current injector. Here,
+   * external injectors are called "siblings", and are used if
+   * the required token is not found in the current injector. Once
+   * the required token is not found in the siblings, the search
+   * will continue in the parent injectors.
+   * 
    * ### Usage
    *
 ```ts
@@ -281,7 +293,10 @@ injector.addSibling(externalInjector1, [token1, token2, token3]);
 injector.addSibling(externalInjector2, [token4, token5, token6]);
 ```
    */
-  abstract addSibling(externalInjector: ReflectiveInjector, tokens: any[]): void;
+  abstract addSibling(externalInjector: ReflectiveInjector, tokens: Set<any>): void;
+  /**
+   * Removes all cached objects from current injector.
+   */
   abstract clearCache(): void;
 }
 
@@ -310,18 +325,18 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
 
   clearCache() {
     this._constructionCounter = 0;
-    this._providers.forEach(p => {
+    this._providers.forEach((p) => {
       this.map[p.key.id] = p;
     });
   }
 
-  addSibling(externalInjector: this, tokens: any[]): void {
+  addSibling(externalInjector: this, tokens: Set<any>): void {
     if (!this.siblings) {
       this.siblings = new Map();
     }
-    tokens.forEach(token => {
+    tokens.forEach((token) => {
       this.siblings.set(token, externalInjector);
-    })
+    });
   }
 
   get(token: any, notFoundValue: any = THROW_IF_NOT_FOUND): any {
@@ -394,7 +409,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
 
     let deps: any[];
     try {
-      deps = ResolvedReflectiveFactory.dependencies.map(dep => this._getByReflectiveDependency(dep));
+      deps = ResolvedReflectiveFactory.dependencies.map((dep) => this._getByReflectiveDependency(dep));
     } catch (e: any) {
       if (e.addKey) {
         (e as InjectionError).addKey(this, provider.key);
@@ -434,7 +449,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
       return UNDEFINED;
     }
     if (obj instanceof ResolvedReflectiveProvider_) {
-      return this.map[keyId] = this._new(obj);
+      return (this.map[keyId] = this._new(obj));
     }
     return obj;
   }
@@ -450,13 +465,13 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   /** @internal */
   _getByKeySelf(key: ReflectiveKey, notFoundValue: any): any {
     const obj = this._getObjByKeyId(key.id);
-      if (obj !== UNDEFINED) {
-        return obj;
-      }
-      const sibling = this.siblings?.get(key.token);
-      if (sibling) {
-        return sibling.get(key.token);
-      }
+    if (obj !== UNDEFINED) {
+      return obj;
+    }
+    const sibling = this.siblings?.get(key.token);
+    if (sibling) {
+      return sibling.get(key.token);
+    }
     return this._throwOrNull(key, notFoundValue);
   }
 
