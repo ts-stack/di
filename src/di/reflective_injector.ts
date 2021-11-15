@@ -289,20 +289,16 @@ expect(car).not.toBe(injector.instantiateResolved(carProvider));
    * ### Usage
    *
 ```ts
-injector.addSibling(externalInjector1, [token1, token2, token3]);
-injector.addSibling(externalInjector2, [token4, token5, token6]);
+injector.addSibling(externalInjector1, new Set([token1, token2, token3]));
+injector.addSibling(externalInjector2, new Set([token4, token5, token6]));
 ```
    */
   abstract addSibling(externalInjector: ReflectiveInjector, tokens: Set<any>): void;
-  /**
-   * Removes all cached objects from current injector.
-   */
-  abstract clearCache(): void;
 }
 
 export class ReflectiveInjector_ implements ReflectiveInjector {
   /** @internal */
-  _constructionCounter: number;
+  _constructionCounter = 0;
   /** @internal */
   public _providers: ResolvedReflectiveProvider[];
   /** @internal */
@@ -312,31 +308,40 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   /**
    * Siblings injectors.
    */
-  protected siblings: Map<any, ReflectiveInjector>;
+  siblings: Map<any, ReflectiveInjector>;
   /**
    * Private
    */
   constructor(_providers: ResolvedReflectiveProvider[], _parent?: Injector) {
     this._providers = _providers;
     this._parent = _parent || null;
-
-    this.clearCache();
-  }
-
-  clearCache() {
-    this._constructionCounter = 0;
     this._providers.forEach((p) => {
       this.map[p.key.id] = p;
     });
   }
 
-  addSibling(externalInjector: this, tokens: Set<any>): void {
+  addSibling(externalInjector: ReflectiveInjector_, tokens: Set<any>): void {
     if (!this.siblings) {
       this.siblings = new Map();
     }
     tokens.forEach((token) => {
+      this.checkCyclicDependencyForSibling(externalInjector, token);
       this.siblings.set(token, externalInjector);
     });
+  }
+
+  protected checkCyclicDependencyForSibling(externalInjector: ReflectiveInjector_, token: Set<any>) {
+    if (externalInjector === this) {
+      throw new Error('Cannot add self to sibling!');
+    }
+    let inj: Injector | null = externalInjector;
+    while (inj instanceof ReflectiveInjector_) {
+      const inj_ = inj as ReflectiveInjector_;
+      if (inj_.siblings?.get(token) === this) {
+        throw new Error('Cannot add cyclic dependency for the sibling!');
+      }
+      inj = inj_._parent;
+    }
   }
 
   get(token: any, notFoundValue: any = THROW_IF_NOT_FOUND): any {

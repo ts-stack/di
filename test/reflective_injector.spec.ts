@@ -447,7 +447,7 @@ describe('depedency resolution', () => {
 describe('resolve', () => {
   it('should resolve and flatten', () => {
     const resolvedProviders = ReflectiveInjector.resolve([Engine, [BrokenEngine]]);
-    resolvedProviders.forEach(provider => {
+    resolvedProviders.forEach((provider) => {
       if (!provider) {
         return;
       } // the result is a sparse array
@@ -584,20 +584,9 @@ describe(`child.parent = parent`, () => {
   });
 });
 
-describe(`injector.clearCache()`, () => {
-  it('should clear cache', () => {
-    const injector = ReflectiveInjector.resolveAndCreate([Engine]);
-
-    const engine = injector.get(Engine);
-    expect(engine).toBe(injector.get(Engine));
-    injector.clearCache();
-    expect(engine).not.toBe(injector.get(Engine));
-  });
-});
-
 describe(`null as provider's value`, () => {
   it(`should works with "undefined"`, () => {
-    const injector = ReflectiveInjector.resolveAndCreate([{provide: Engine, useValue: undefined }]);
+    const injector = ReflectiveInjector.resolveAndCreate([{ provide: Engine, useValue: undefined }]);
 
     expect(() => {
       injector.get(Engine); // Create cache
@@ -607,7 +596,7 @@ describe(`null as provider's value`, () => {
   });
 
   it(`should works with "null"`, () => {
-    const injector = ReflectiveInjector.resolveAndCreate([{provide: Engine, useValue: null }]);
+    const injector = ReflectiveInjector.resolveAndCreate([{ provide: Engine, useValue: null }]);
 
     expect(() => {
       injector.get(Engine); // Create cache
@@ -617,7 +606,7 @@ describe(`null as provider's value`, () => {
   });
 
   it(`should works with "0"`, () => {
-    const injector = ReflectiveInjector.resolveAndCreate([{provide: Engine, useValue: 0 }]);
+    const injector = ReflectiveInjector.resolveAndCreate([{ provide: Engine, useValue: 0 }]);
 
     expect(() => {
       injector.get(Engine); // Create cache
@@ -627,12 +616,41 @@ describe(`null as provider's value`, () => {
   });
 
   it(`should works with ""`, () => {
-    const injector = ReflectiveInjector.resolveAndCreate([{provide: Engine, useValue: '' }]);
+    const injector = ReflectiveInjector.resolveAndCreate([{ provide: Engine, useValue: '' }]);
 
     expect(() => {
       injector.get(Engine); // Create cache
       injector.get(Engine); // Get from cache
     }).not.toThrow();
     expect(injector.get(Engine)).toBe('');
+  });
+});
+
+describe(`cyclic dependency for are siblings`, () => {
+  const tokens = new Set([Engine]);
+  const errMsg = 'Cannot add cyclic dependency for the sibling!';
+
+  it('adding each other in sibling', () => {
+    const injector1 = ReflectiveInjector.resolveAndCreate([]);
+    const injector2 = ReflectiveInjector.resolveAndCreate([]);
+
+    injector1.addSibling(injector2, tokens);
+    expect(() => injector2.addSibling(injector1, tokens)).toThrowError(errMsg);
+  });
+
+  it('case 2', () => {
+    const injector1 = ReflectiveInjector.resolveAndCreate([]);
+    const injector2 = ReflectiveInjector.resolveAndCreate([]);
+    const child2 = injector2.resolveAndCreateChild([]);
+    injector2.addSibling(injector1, tokens);
+    expect(() => injector1.addSibling(child2, tokens)).toThrowError(errMsg);
+  });
+
+  fit('case 3', () => {
+    const injector1 = ReflectiveInjector.resolveAndCreate([]);
+    const injector2 = ReflectiveInjector.resolveAndCreate([]);
+    const child2 = injector2.resolveAndCreateChild([]);
+    injector1.addSibling(child2, tokens);
+    expect(() => injector2.addSibling(injector1, tokens)).toThrowError(errMsg);
   });
 });
