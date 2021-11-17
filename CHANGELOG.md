@@ -1,5 +1,12 @@
+<a name="1.2.0-rc.3"></a>
+# [1.2.0-rc.3](https://github.com/ts-stack/di/releases/tag/1.2.0-rc.3) (2021-11-17)
+
+### Breaking Changes
+
+- Removed support for injector's siblings, setting parent after create injector.
+
 <a name="1.2.0-rc.2"></a>
-# [1.2.0-rc.2](https://github.com/ts-stack/di/releases/tag/1.2.0-rc.2) (2021-11-12)
+## [1.2.0-rc.2](https://github.com/ts-stack/di/releases/tag/1.2.0-rc.2) (2021-11-12)
 
 ### Features
 

@@ -169,7 +169,7 @@ expect(child.parent).toBe(parent);
    *
    * See [Hierarchical Dependency Injectors](https://v4.angular.io/guide/hierarchical-dependency-injection)
    */
-  abstract parent: Injector | null;
+  abstract get parent(): Injector | null;
 
   /**
    * Resolves an array of providers and creates a child injector from those providers.
@@ -278,22 +278,6 @@ expect(car).not.toBe(injector.instantiateResolved(carProvider));
   abstract instantiateResolved(provider: ResolvedReflectiveProvider): any;
 
   abstract get(token: any, notFoundValue?: any): any;
-
-  /**
-   * Adds an external injector to the current injector. Here,
-   * external injectors are called "siblings", and are used if
-   * the required token is not found in the current injector. Once
-   * the required token is not found in the siblings, the search
-   * will continue in the parent injectors.
-   * 
-   * ### Usage
-   *
-```ts
-injector.addSibling(externalInjector1, new Set([token1, token2, token3]));
-injector.addSibling(externalInjector2, new Set([token4, token5, token6]));
-```
-   */
-  abstract addSibling(externalInjector: ReflectiveInjector, tokens: Set<any>): void;
 }
 
 export class ReflectiveInjector_ implements ReflectiveInjector {
@@ -306,10 +290,6 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
 
   protected map: { [keyId: number]: any } = {};
   /**
-   * Siblings injectors.
-   */
-  siblings: Map<any, ReflectiveInjector>;
-  /**
    * Private
    */
   constructor(_providers: ResolvedReflectiveProvider[], _parent?: Injector) {
@@ -320,40 +300,12 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     });
   }
 
-  addSibling(externalInjector: ReflectiveInjector_, tokens: Set<any>): void {
-    if (!this.siblings) {
-      this.siblings = new Map();
-    }
-    tokens.forEach((token) => {
-      this.checkCyclicDependencyForSibling(externalInjector, token);
-      this.siblings.set(token, externalInjector);
-    });
-  }
-
-  protected checkCyclicDependencyForSibling(externalInjector: ReflectiveInjector_, token: Set<any>) {
-    if (externalInjector === this) {
-      throw new Error('Cannot add self to sibling!');
-    }
-    let inj: Injector | null = externalInjector;
-    while (inj instanceof ReflectiveInjector_) {
-      const inj_ = inj as ReflectiveInjector_;
-      if (inj_.siblings?.get(token) === this) {
-        throw new Error('Cannot add cyclic dependency for the sibling!');
-      }
-      inj = inj_._parent;
-    }
-  }
-
   get(token: any, notFoundValue: any = THROW_IF_NOT_FOUND): any {
     return this._getByKey(ReflectiveKey.get(token), null, notFoundValue);
   }
 
   get parent(): Injector | null {
     return this._parent;
-  }
-
-  set parent(val) {
-    this._parent = val;
   }
 
   resolveAndCreateChild(providers: Provider[]): ReflectiveInjector {
@@ -473,10 +425,6 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     if (obj !== UNDEFINED) {
       return obj;
     }
-    const sibling = this.siblings?.get(key.token);
-    if (sibling) {
-      return sibling.get(key.token);
-    }
     return this._throwOrNull(key, notFoundValue);
   }
 
@@ -495,10 +443,6 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
       const obj = inj_._getObjByKeyId(key.id);
       if (obj !== UNDEFINED) {
         return obj;
-      }
-      const sibling = inj_.siblings?.get(key.token);
-      if (sibling) {
-        return sibling.get(key.token);
       }
       inj = inj_._parent;
     }
