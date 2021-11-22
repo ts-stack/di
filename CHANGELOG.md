@@ -1,5 +1,17 @@
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/ts-stack/di/releases/tag/1.2.0) (2021-11-22)
+
+### Features
+
+- Added `Error.captureStackTrace()` to clear internal error trace.
+- Migrating to TypeScript strict `compilerOptions`.
+
+### Performance Improvements
+
+- Migrating injectors from array search to object search should improve their performance (more than three times).
+
 <a name="1.2.0-rc.3"></a>
-# [1.2.0-rc.3](https://github.com/ts-stack/di/releases/tag/1.2.0-rc.3) (2021-11-17)
+## [1.2.0-rc.3](https://github.com/ts-stack/di/releases/tag/1.2.0-rc.3) (2021-11-17)
 
 ### Breaking Changes
 
