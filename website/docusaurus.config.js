@@ -6,15 +6,28 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'My Site',
+  i18n: {
+    defaultLocale: 'uk',
+    locales: ['uk', 'en'],
+    localeConfigs: {
+      uk: {
+        label: 'Українська',
+      },
+      en: {
+        label: 'English',
+      },
+    },
+  },
+  title: '@ts-stack/di',
   tagline: 'Dinosaurs are cool',
-  url: 'https://your-docusaurus-test-site.com',
-  baseUrl: '/',
+  url: 'https://ts-stack.github.io',
+  baseUrl: '/di/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'ts-stack', // Usually your GitHub org/user name.
+  projectName: 'di', // Usually your repo name.
+  trailingSlash: false,
 
   presets: [
     [
@@ -22,7 +35,7 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-        routeBasePath: '/',
+          routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl: 'https://github.com/ts-stack/di/edit/main/website/',
@@ -37,20 +50,18 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      gtag: {
+        trackingID: 'G-4X1PN2WDRF',
+        // Optional fields.
+        // anonymizeIP: true, // Should IPs be anonymized?
+      },
       navbar: {
-        title: 'My Site',
-        logo: {
-          alt: 'My Site Logo',
-          src: 'img/logo.svg',
-        },
+        title: 'Документація для @ts-stack/di',
         items: [
           {
-            type: 'doc',
-            docId: 'intro',
+            type: 'localeDropdown',
             position: 'left',
-            label: 'Tutorial',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
           {
             href: 'https://github.com/ts-stack/di',
             label: 'GitHub',
@@ -60,47 +71,7 @@ const config = {
       },
       footer: {
         style: 'dark',
-        links: [
-          {
-            title: 'Docs',
-            items: [
-              {
-                label: 'Tutorial',
-                to: '/docs/intro',
-              },
-            ],
-          },
-          {
-            title: 'Community',
-            items: [
-              {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-              },
-              {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
-              },
-              {
-                label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
-              },
-            ],
-          },
-          {
-            title: 'More',
-            items: [
-              {
-                label: 'Blog',
-                to: '/blog',
-              },
-              {
-                label: 'GitHub',
-                href: 'https://github.com/ts-stack/di',
-              },
-            ],
-          },
-        ],
+        links: [],
         copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
       },
       prism: {
