@@ -34,6 +34,11 @@ const config = {
       '@docusaurus/preset-classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
+        gtag: {
+          trackingID: 'G-4X1PN2WDRF',
+          // Optional fields.
+          // anonymizeIP: true, // Should IPs be anonymized?
+        },
         docs: {
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
@@ -50,11 +55,6 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      gtag: {
-        trackingID: 'G-4X1PN2WDRF',
-        // Optional fields.
-        // anonymizeIP: true, // Should IPs be anonymized?
-      },
       navbar: {
         // title: 'Документація для @ts-stack/di',
         items: [
