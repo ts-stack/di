@@ -55,3 +55,5 @@ For full documentation check Angular DI docs:
 - [Dependency Injection](https://v4.angular.io/guide/dependency-injection)
 - [Hierarchical Dependency Injectors](https://v4.angular.io/guide/hierarchical-dependency-injection)
 - [Dependency Injection in action](https://v4.angular.io/guide/dependency-injection-in-action)
+
+You can also see [The Ukrainian version of the documentation](https://ts-stack.github.io/di/).
