@@ -4,7 +4,7 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
-/** @type {import('@docusaurus/types').Config} */
+/** @type-disable {import('@docusaurus/types').Config} */
 const config = {
   i18n: {
     defaultLocale: 'uk',
@@ -56,12 +56,12 @@ const config = {
         // anonymizeIP: true, // Should IPs be anonymized?
       },
       navbar: {
-        title: 'Документація для @ts-stack/di',
+        // title: 'Документація для @ts-stack/di',
         items: [
-          {
-            type: 'localeDropdown',
-            position: 'left',
-          },
+          // {
+          //   type: 'localeDropdown',
+          //   position: 'left',
+          // },
           {
             href: 'https://github.com/ts-stack/di',
             label: 'GitHub',
@@ -72,7 +72,7 @@ const config = {
       footer: {
         style: 'dark',
         links: [],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} ts-stack, Inc. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
