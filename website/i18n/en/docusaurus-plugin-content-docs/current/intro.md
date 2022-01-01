@@ -214,7 +214,7 @@ The term **provider** in `@ts-stack/di` means either a class or an object with t
 { provide: <token>, useExisting: <another token> },
 ```
 
-Every provider has a token, but not every token can be a provider. In fact, only a class can act as both a provider and a token. For example, a string can only be used as a token, not as a provider. Token types are described in more detail in the [next section](#di-token-types).
+Every provider has a token, but not every token can be a provider. In fact, only a class can act as both a provider and a token. For example, a string can only be used as a token, not as a provider. Token types are described in more detail in the [next section](#types-of-di-tokens).
 
 There is also the concept of multi-providers, but they will be mentioned [later](#multi-providers).
 
