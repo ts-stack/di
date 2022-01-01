@@ -43,7 +43,10 @@ const config = {
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/ts-stack/di/edit/main/website/',
+          editUrl: ({ version, versionDocsDirPath, docPath, locale }) =>
+          locale == 'en'
+            ? `https://github.com/ts-stack/diedit/main/website/i18n/en/docusaurus-plugin-content-docs/${version}/${docPath}`
+            : `https://github.com/ts-stack/di/edit/main/website/${versionDocsDirPath}/${docPath}`,
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -58,10 +61,10 @@ const config = {
       navbar: {
         // title: 'Документація для @ts-stack/di',
         items: [
-          // {
-          //   type: 'localeDropdown',
-          //   position: 'left',
-          // },
+          {
+            type: 'localeDropdown',
+            position: 'right',
+          },
           {
             href: 'https://github.com/ts-stack/di',
             label: 'GitHub',
