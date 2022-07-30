@@ -265,7 +265,10 @@ class BaseLogger {
 
 // Somewhere in your application code
 class ExtendedLogger extends BaseLogger {
-  constructor(private extendedLoggerConfig: ExtendedLoggerConfig) {}
+  constructor(private extendedLoggerConfig: ExtendedLoggerConfig) {
+    super(extendedLoggerConfig);
+    // ...
+  }
 }
 ```
 
