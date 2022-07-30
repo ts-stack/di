@@ -218,6 +218,125 @@ Every provider has a token, but not every token can be a provider. In fact, only
 
 There is also the concept of multi-providers, but they will be mentioned [later](#multi-providers).
 
+### useExisting
+
+
+As shown in the previous example, to specify a provider, you can use an object with the `useExisting` property. Note that in this case you are not passing the provider itself, but only **pointing** to its token. Example:
+
+```ts
+[
+  { provide: Class2, useExisting: Class1 },
+  // ...
+]
+```
+
+Here, the token `Class2` points to another token `Class1`. For the DI injector, this instruction says: "When `Class2` is requested, it is necessary to continue the search for the provider, but with the `Class1` token."
+
+:::tip When is it needed?
+This option is advisable to use when you want to use a single token to transfer to DI several different providers that are united to each other by a basic interface. However, you want to use all these different providers as tokens when you request their values from DI.
+:::
+
+Suppose your code uses `BaseService` and you want to extend it in a new `ExtendedService` class. When you pass values for these classes to DI, you will only use `BaseService` as a token. However, when you request DI for either `BaseService` or `ExtendedService`, you want to be given a provider with a `BaseService` token. These classes can be:
+
+```ts
+class BaseService {
+  property1: string;
+}
+
+class ExtendedService extends BaseService {
+  property2?: number;
+}
+```
+
+:::caution Optional properties in extended class
+It is important that all the properties of the extended class are optional, because DI can give a `BaseService` instance based on the `ExtendedService` token.
+:::
+
+Now let's assume that in one of the services, the provider is requested by the `BaseService` token as follows:
+
+```ts
+@Injectable()
+class OldService {
+  constructor(private baseService: BaseService) {}
+
+  oldMethod() {
+    console.log('The basic interface of the provider is used:', this.baseService.property1);
+  }
+}
+```
+
+This service can work with an instance of `BaseService` or `ExtendedService`, because both of these classes are united by the base interface, and only the property of the base interface is used here. That is, we can pass one of these providers to DI:
+
+```ts
+[
+  { provide: BaseService, useValue: new BaseService() },
+  { provide: BaseService, useValue: new ExtendedService() },
+]
+```
+
+The following example. Let's assume that in another service, a provider is requested from the DI using the `ExtendedService` token:
+
+```ts
+@Injectable()
+class NewService {
+  constructor(private extendedService: ExtendedService) {}
+
+  newMethod() {
+    if (this.extendedService.hasProperty('property2')) {
+      console.log('This is an extended version of the provider:', this.extendedService);
+    } else {
+      console.log('This is the basic version of the provider:', this.extendedService);
+    }
+  }
+}
+```
+
+In order for `NewService` to work with instances of `BaseService` or `ExtendedService`, you need to use the `useExisting` property when passing providers to DI:
+
+```ts
+[
+  { provide: ExtendedService, useExisting: BaseService },
+  { provide: BaseService, useValue: new ExtendedService() },
+]
+```
+
+In this case, upon request of `ExtendedService`, DI will give an instance of `ExtendedService`.
+
+And if you write like this:
+
+```ts
+[
+  { provide: ExtendedService, useExisting: BaseService },
+  { provide: BaseService, useValue: new BaseService() },
+]
+```
+
+In this case, upon request of `ExtendedService`, DI will give an instance of `BaseService`.
+
+Well, if you write like this:
+
+```ts
+[
+  { provide: ExtendedService, useExisting: BaseService },
+]
+```
+
+DI кине помилку, бо ви дали інструкцію, щоб по запиту `ExtendedService` DI продовжував пошук провайдера із токеном `BaseService`, але не дали самого провайдера із токеном `BaseService`.
+
+Враховуючи ту роль, яку виконує об'єкт із значенням `useExisting` для інжектора DI, мабуть краще було б використовувати замість `useExisting` властивість `useToken`:
+
+DI will throw an error, because you gave an instruction so that upon request `ExtendedService` DI continues to search for a provider with a `BaseService` token, but you did not give the provider with a `BaseService` token itself.
+
+Given the role that the `useExisting` object plays for the DI injector, it would probably be better to use the `useToken` property instead of `useExisting`:
+
+```ts
+[
+  { provide: Class2, useToken: Class1 }
+]
+```
+
+But the Angular team [didn't want to rename `useExisting'][1].
+
 ## Multiple addition of providers with the same token
 
 You can pass many providers to the injector array for the same token, but DI will choose the last provider:
@@ -357,3 +476,8 @@ const child = parent.resolveAndCreateChild([
 
 const locals = child.get(LOCAL); // ['аа']
 ```
+
+```
+
+
+[1]: https://github.com/angular/angular/issues/19650

@@ -218,6 +218,120 @@ const service = injector.get(Service1); // Інстанс класу Service2
 
 Існує ще поняття мульти-провайдерів, але про них буде згадано [пізніше](#мульти-провайдери).
 
+### useExisting
+
+Як показано в попередньому прикладі, щоб вказати провайдер, ви можете використати об'єкт, що має властивість `useExisting`. Зверніть увагу, що в такому разі ви не передаєте сам провайдер, а лише **вказуєте** на його токен. Наприклад:
+
+```ts
+[
+  { provide: Class2, useExisting: Class1 },
+  // ...
+]
+```
+
+Тут токен `Class2` вказує на інший токен `Class1`. Для інжектора DI така інструкція говорить: "Коли запитують `Class2`, потрібно продовжити пошук провайдера, але вже по токену `Class1`".
+
+:::tip Коли це потрібно?
+Такий варіант доцільно використовувати, коли ви хочете використовувати єдиний токен для передачі до DI декількох різних провайдерів, які об'єднані між собою базовим інтерфейсом. Разом із тим, ви хочете використовувати усі ці різні провайдери у якості токенів, коли запитуєте їхні значення у DI.
+:::
+
+Припустимо, у вашому коді використовується `BaseService` і ви хочете його розширити у новому класі `ExtendedService`. Коли ви передаватимете до DI значення для цих класів, у якості токена ви будете використовувати тільки `BaseService`. Разом із тим, коли ви запитуватимете у DI або `BaseService`, або `ExtendedService`, ви хочете щоб вам видався провайдер із токеном `BaseService`. Ці класи можуть бути такими:
+
+```ts
+class BaseService {
+  property1: string;
+}
+
+class ExtendedService extends BaseService {
+  property2?: number;
+}
+```
+
+:::caution Опціональні властивості у розширеного класу
+Важливо щоб усі властивості розширеного класу були необов'язковими, оскільки по токену `ExtendedService` DI може видавати інстанс `BaseService`.
+:::
+
+Тепер припустимо, що в одному із сервісів у DI запитується провайдер по токену `BaseService` наступним чином:
+
+```ts
+@Injectable()
+class OldService {
+  constructor(private baseService: BaseService) {}
+
+  oldMethod() {
+    console.log('Використовується базовий інтерфейс провайдера:', this.baseService.property1);
+  }
+}
+```
+
+Даний сервіс може працювати із інстансом `BaseService` або `ExtendedService`, оскільки обидва ці класи об'єднані базовим інтерфейсом, і тут використовується властивість лише базового інтерфейсу. Тобто до DI ми можемо передавати один із цих провайдерів:
+
+```ts
+[
+  { provide: BaseService, useValue: new BaseService() },
+  { provide: BaseService, useValue: new ExtendedService() },
+]
+```
+
+Наступний приклад. Припустимо, що у іншому сервісі у DI запитується провайдер по токену `ExtendedService`:
+
+```ts
+@Injectable()
+class NewService {
+  constructor(private extendedService: ExtendedService) {}
+
+  newMethod() {
+    if (this.extendedService.hasProperty('property2')) {
+      console.log('Це розширена версія провайдера:', this.extendedService);
+    } else {
+      console.log('Це базова версія провайдера:', this.extendedService);
+    }
+  }
+}
+```
+
+Щоб `NewService` міг працювати із інстансами `BaseService` або `ExtendedService`, при передачі провайдерів до DI потрібно використати властивість `useExisting`:
+
+```ts
+[
+  { provide: ExtendedService, useExisting: BaseService },
+  { provide: BaseService, useValue: new ExtendedService() },
+]
+```
+
+В такому разі по запиту `ExtendedService`, DI буде видавати інстанс `ExtendedService`.
+
+А якщо ви напишете так:
+
+```ts
+[
+  { provide: ExtendedService, useExisting: BaseService },
+  { provide: BaseService, useValue: new BaseService() },
+]
+```
+
+В такому разі по запиту `ExtendedService`, DI буде видавати інстанс `BaseService`.
+
+Ну і якщо ви напишете так:
+
+```ts
+[
+  { provide: ExtendedService, useExisting: BaseService },
+]
+```
+
+DI кине помилку, бо ви дали інструкцію, щоб по запиту `ExtendedService` DI продовжував пошук провайдера із токеном `BaseService`, але не дали самого провайдера із токеном `BaseService`.
+
+Враховуючи ту роль, яку виконує об'єкт із значенням `useExisting` для інжектора DI, мабуть краще було б використовувати змість `useExisting` властивість `useToken`:
+
+```ts
+[
+  { provide: Class2, useToken: Class1 }
+]
+```
+
+Але команда Angular [не захотіла перейменовувати `useExisting`][1].
+
 ## Множинне додавання провайдерів з однаковим токеном
 
 В масив для створення інжектора можна передавати багато провайдерів для одного й того самого токена, але DI вибере останній із провайдерів:
@@ -357,3 +471,6 @@ const child = parent.resolveAndCreateChild([
 
 const locals = child.get(LOCAL); // ['аа']
 ```
+
+
+[1]: https://github.com/angular/angular/issues/19650
