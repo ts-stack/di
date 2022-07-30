@@ -232,105 +232,57 @@ const service = injector.get(Service1); // Інстанс класу Service2
 Тут токен `Class2` вказує на інший токен `Class1`. Для інжектора DI така інструкція говорить: "Коли запитують `Class2`, потрібно продовжити пошук провайдера, але вже по токену `Class1`".
 
 :::tip Коли це потрібно?
-Такий варіант доцільно використовувати, коли ви хочете використовувати єдиний токен для передачі до DI декількох різних провайдерів, які об'єднані між собою базовим інтерфейсом. Разом із тим, ви хочете використовувати усі ці різні провайдери у якості токенів, коли запитуєте їхні значення у DI.
+Такий варіант доцільно використовувати, коли ви маєте базовий та розширений клас, і ви хочете використовувати базовий клас у якості токена для DI, а інстанс розширеного класу - у якості значення для цього токена. Разом із тим, ви хочете використовувати в одних випадках інтерфейс базового класу, а у інших - інтерфейс розширеного класу.
 :::
 
-Припустимо, у вашому коді використовується `BaseService` і ви хочете його розширити у новому класі `ExtendedService`. Коли ви передаватимете до DI значення для цих класів, у якості токена ви будете використовувати тільки `BaseService`. Разом із тим, коли ви запитуватимете у DI або `BaseService`, або `ExtendedService`, ви хочете щоб вам видався провайдер із токеном `BaseService`. Ці класи можуть бути такими:
+Приклад із життя. Припустимо ваш фреймворк використовує базовий логер, який через DI приймає базову конфігурацію:
 
 ```ts
-class BaseService {
-  property1: string;
-}
-
-class ExtendedService extends BaseService {
-  property2?: number;
+class BaseLoggerConfig {
+  level: string;
 }
 ```
 
-:::caution Опціональні властивості у розширеного класу
-Важливо щоб усі властивості розширеного класу були необов'язковими, оскільки по токену `ExtendedService` DI може видавати інстанс `BaseService`.
-:::
-
-Тепер припустимо, що в одному із сервісів у DI запитується провайдер по токену `BaseService` наступним чином:
+Ви хочете розширити цю конфігурацію так, щоб вона працювала і для базового, і для розширеного логера:
 
 ```ts
-@Injectable()
-class OldService {
-  constructor(private baseService: BaseService) {}
-
-  oldMethod() {
-    console.log('Використовується базовий інтерфейс провайдера:', this.baseService.property1);
-  }
+class ExtendedLoggerConfig extends BaseLoggerConfig {
+  displayFilePath: string;
+  displayFunctionName: boolean;
 }
 ```
 
-Даний сервіс може працювати із інстансом `BaseService` або `ExtendedService`, оскільки обидва ці класи об'єднані базовим інтерфейсом, і тут використовується властивість лише базового інтерфейсу. Тобто до DI ми можемо передавати один із цих провайдерів:
+Разом із тим, ви хочете у базовому логері використовувати базову конфігурацію, а у розширеному - розширену конфігурацію:
 
 ```ts
-[
-  { provide: BaseService, useValue: new BaseService() },
-  { provide: BaseService, useValue: new ExtendedService() },
-]
-```
+// Десь у коді вашого фреймворку
+class BaseLogger {
+  constructor(private loggerConfig: BaseLoggerConfig) {}
+}
 
-Наступний приклад. Припустимо, що у іншому сервісі у DI запитується провайдер по токену `ExtendedService`:
+//...
 
-```ts
-@Injectable()
-class NewService {
-  constructor(private extendedService: ExtendedService) {}
-
-  newMethod() {
-    if (this.extendedService.hasProperty('property2')) {
-      console.log('Це розширена версія провайдера:', this.extendedService);
-    } else {
-      console.log('Це базова версія провайдера:', this.extendedService);
-    }
-  }
+// Десь у коді вашого застосунку
+class ExtendedLogger extends BaseLogger {
+  constructor(private extendedLoggerConfig: ExtendedLoggerConfig) {}
 }
 ```
 
-Щоб даний сервіс міг працювати із інстансами `BaseService` або `ExtendedService`, при передачі провайдерів до DI потрібно використати властивість `useExisting`:
+Щоб не передавати дві різні конфігурації до DI, можете використати `useExisting`: 
 
 ```ts
 [
-  { provide: ExtendedService, useExisting: BaseService },
-  { provide: BaseService, useValue: new ExtendedService() },
+  { provide: BaseLoggerConfig, useValue: new ExtendedLoggerConfig() },
+  { provide: ExtendedLoggerConfig, useExisting: BaseLoggerConfig },
 ]
 ```
 
-В такому разі по запиту `ExtendedService`, DI буде видавати інстанс `ExtendedService`.
+Таким чином ви передаєте для DI дві інструкції:
 
-А якщо ви напишете так:
+1. перший елемент в масиві передає значення для токена `BaseLoggerConfig`;
+2. другий елемент в масиві вказує, що для токена `ExtendedLoggerConfig` значення потрібно шукати по токену `BaseLoggerConfig` (тобто фактично вказує на перший елемент масиву).
 
-```ts
-[
-  { provide: ExtendedService, useExisting: BaseService },
-  { provide: BaseService, useValue: new BaseService() },
-]
-```
-
-В такому разі по запиту `ExtendedService`, DI буде видавати інстанс `BaseService`.
-
-Ну і якщо ви напишете так:
-
-```ts
-[
-  { provide: ExtendedService, useExisting: BaseService },
-]
-```
-
-DI кине помилку, бо ви дали інструкцію, щоб по запиту `ExtendedService` DI продовжував пошук провайдера із токеном `BaseService`, але не дали самого провайдера із токеном `BaseService`.
-
-Враховуючи ту роль, яку виконує об'єкт із значенням `useExisting` для інжектора DI, мабуть краще було б використовувати змість `useExisting` властивість `useToken`:
-
-```ts
-[
-  { provide: Class2, useToken: Class1 }
-]
-```
-
-Але команда Angular [не захотіла перейменовувати `useExisting`][1].
+В такому разі і базовий, і розширений логер отримають одну й ту саму - розширену конфігурацію, яка буде сумісна із базовою конфігурацією.
 
 ## Множинне додавання провайдерів з однаковим токеном
 
@@ -471,6 +423,3 @@ const child = parent.resolveAndCreateChild([
 
 const locals = child.get(LOCAL); // ['аа']
 ```
-
-
-[1]: https://github.com/angular/angular/issues/19650

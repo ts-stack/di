@@ -233,109 +233,57 @@ As shown in the previous example, to specify a provider, you can use an object w
 Here, the token `Class2` points to another token `Class1`. For the DI injector, this instruction says: "When `Class2` is requested, it is necessary to continue the search for the provider, but with the `Class1` token."
 
 :::tip When is it needed?
-This option is advisable to use when you want to use a single token to transfer to DI several different providers that are united to each other by a basic interface. However, you want to use all these different providers as tokens when you request their values from DI.
+This option is useful when you have a base class and an extended class, and you want to use the base class as a token for DI, and an instance of the extended class as the value for that token. However, you want to use the base class interface in some cases and the extended class interface in others.
 :::
 
-Suppose your code uses `BaseService` and you want to extend it in a new `ExtendedService` class. When you pass values for these classes to DI, you will only use `BaseService` as a token. However, when you request DI for either `BaseService` or `ExtendedService`, you want to be given a provider with a `BaseService` token. These classes can be:
+An example from real life. Let's say your framework uses a basic logger that accepts a basic configuration via DI:
 
 ```ts
-class BaseService {
-  property1: string;
-}
-
-class ExtendedService extends BaseService {
-  property2?: number;
+class BaseLoggerConfig {
+  level: string;
 }
 ```
 
-:::caution Optional properties in extended class
-It is important that all the properties of the extended class are optional, because DI can give a `BaseService` instance based on the `ExtendedService` token.
-:::
-
-Now let's assume that in one of the services, the provider is requested by the `BaseService` token as follows:
+You want to extend this configuration to work for both the basic and extended loggers:
 
 ```ts
-@Injectable()
-class OldService {
-  constructor(private baseService: BaseService) {}
-
-  oldMethod() {
-    console.log('The basic interface of the provider is used:', this.baseService.property1);
-  }
+class ExtendedLoggerConfig extends BaseLoggerConfig {
+  displayFilePath: string;
+  displayFunctionName: boolean;
 }
 ```
 
-This service can work with an instance of `BaseService` or `ExtendedService`, because both of these classes are united by the base interface, and only the property of the base interface is used here. That is, we can pass one of these providers to DI:
+However, you want to use the basic configuration in the basic logger and the extended configuration in the extended one:
 
 ```ts
-[
-  { provide: BaseService, useValue: new BaseService() },
-  { provide: BaseService, useValue: new ExtendedService() },
-]
-```
+// Somewhere in your framework code
+class BaseLogger {
+  constructor(private loggerConfig: BaseLoggerConfig) {}
+}
 
-The following example. Let's assume that in another service, a provider is requested from the DI using the `ExtendedService` token:
+//...
 
-```ts
-@Injectable()
-class NewService {
-  constructor(private extendedService: ExtendedService) {}
-
-  newMethod() {
-    if (this.extendedService.hasProperty('property2')) {
-      console.log('This is an extended version of the provider:', this.extendedService);
-    } else {
-      console.log('This is the basic version of the provider:', this.extendedService);
-    }
-  }
+// Somewhere in your application code
+class ExtendedLogger extends BaseLogger {
+  constructor(private extendedLoggerConfig: ExtendedLoggerConfig) {}
 }
 ```
 
-So that this service can work with `BaseService` or `ExtendedService` instances, you need to use the `useExisting` property when passing providers to DI:
+To avoid passing two different configurations to DI, you can use `useExisting`:
 
 ```ts
 [
-  { provide: ExtendedService, useExisting: BaseService },
-  { provide: BaseService, useValue: new ExtendedService() },
+  { provide: BaseLoggerConfig, useValue: new ExtendedLoggerConfig() },
+  { provide: ExtendedLoggerConfig, useExisting: BaseLoggerConfig },
 ]
 ```
 
-In this case, upon request of `ExtendedService`, DI will give an instance of `ExtendedService`.
+This way you pass two instructions to DI:
 
-And if you write like this:
+1. the first element in the array transfers the value for the `BaseLoggerConfig` token;
+2. the second element in the array indicates that the value of the `ExtendedLoggerConfig` token should be searched for by the `BaseLoggerConfig` token (that is, it actually points to the first element of the array).
 
-```ts
-[
-  { provide: ExtendedService, useExisting: BaseService },
-  { provide: BaseService, useValue: new BaseService() },
-]
-```
-
-In this case, upon request of `ExtendedService`, DI will give an instance of `BaseService`.
-
-Well, if you write like this:
-
-```ts
-[
-  { provide: ExtendedService, useExisting: BaseService },
-]
-```
-
-DI кине помилку, бо ви дали інструкцію, щоб по запиту `ExtendedService` DI продовжував пошук провайдера із токеном `BaseService`, але не дали самого провайдера із токеном `BaseService`.
-
-Враховуючи ту роль, яку виконує об'єкт із значенням `useExisting` для інжектора DI, мабуть краще було б використовувати замість `useExisting` властивість `useToken`:
-
-DI will throw an error, because you gave an instruction so that upon request `ExtendedService` DI continues to search for a provider with a `BaseService` token, but you did not give the provider with a `BaseService` token itself.
-
-Given the role that the `useExisting` object plays for the DI injector, it would probably be better to use the `useToken` property instead of `useExisting`:
-
-```ts
-[
-  { provide: Class2, useToken: Class1 }
-]
-```
-
-But the Angular team [didn't want to rename `useExisting'][1].
+In this case, both the basic and the extended logger will receive the same extended configuration, which will be compatible with the basic configuration.
 
 ## Multiple addition of providers with the same token
 
@@ -478,6 +426,3 @@ const locals = child.get(LOCAL); // ['аа']
 ```
 
 ```
-
-
-[1]: https://github.com/angular/angular/issues/19650
