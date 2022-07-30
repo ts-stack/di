@@ -291,7 +291,7 @@ class NewService {
 }
 ```
 
-In order for `NewService` to work with instances of `BaseService` or `ExtendedService`, you need to use the `useExisting` property when passing providers to DI:
+So that this service can work with `BaseService` or `ExtendedService` instances, you need to use the `useExisting` property when passing providers to DI:
 
 ```ts
 [

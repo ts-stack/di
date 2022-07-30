@@ -290,7 +290,7 @@ class NewService {
 }
 ```
 
-Щоб `NewService` міг працювати із інстансами `BaseService` або `ExtendedService`, при передачі провайдерів до DI потрібно використати властивість `useExisting`:
+Щоб даний сервіс міг працювати із інстансами `BaseService` або `ExtendedService`, при передачі провайдерів до DI потрібно використати властивість `useExisting`:
 
 ```ts
 [
