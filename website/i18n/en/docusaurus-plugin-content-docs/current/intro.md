@@ -220,7 +220,6 @@ There is also the concept of multi-providers, but they will be mentioned [later]
 
 ### useExisting
 
-
 As shown in the previous example, to specify a provider, you can use an object with the `useExisting` property. Note that in this case you are not passing the provider itself, but only **pointing** to its token. Example:
 
 ```ts
@@ -230,7 +229,7 @@ As shown in the previous example, to specify a provider, you can use an object w
 ]
 ```
 
-Here, the token `Class2` points to another token `Class1`. For the DI injector, this instruction says: "When `Class2` is requested, it is necessary to continue the search for the provider, but with the `Class1` token."
+Here, the token `Class2` points to another token `Class1`. For the DI injector, this instruction says: "To find the value for the token `Class2`, need to search for the provider by the token `Class1`."
 
 :::tip When is it needed?
 This option is useful when you have a base class and an extended class, and you want to use the base class as a token for DI, and an instance of the extended class as the value for that token. However, you want to use the base class interface in some cases and the extended class interface in others.
