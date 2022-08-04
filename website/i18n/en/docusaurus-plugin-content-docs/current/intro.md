@@ -253,7 +253,7 @@ class ExtendedLoggerConfig extends BaseLoggerConfig {
 }
 ```
 
-However, you want to use the basic configuration in the basic logger and the extended configuration in the extended one:
+However, you want to use the basic configuration interface in the basic logger, and the extended configuration interface in the extended one:
 
 ```ts
 // Somewhere in your framework code
