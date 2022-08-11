@@ -361,7 +361,7 @@ Of course, it is recommended to use the `InjectionToken` only if you cannot use 
 
 ## Multi providers
 
-This type of provider differs from regular DI providers by having the `multi: true` property, and you can transfer multiple providers with the same token to the injector, and DI will return the same number of instances in the same array:
+This type of providers differs from common DI providers by the presence of the `multi: true` property. Such providers are advisable to use when there is a need to transfer several providers with the same token to DI at once, so that DI returns the same number of values for these providers in one array:
 
 ```ts
 import { ReflectiveInjector } from '@ts-stack/di';
