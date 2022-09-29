@@ -427,4 +427,29 @@ const child = parent.resolveAndCreateChild([
 const locals = child.get(LOCAL); // ['аа']
 ```
 
+
+### Substituting multiproviders
+
+To make it possible to substituting a specific multiprovider, you can do the following:
+
+1. first pass the multiprovider and use the `useExisting` property;
+2. then transfer the class you want to substituting;
+3. and at the end of the array, pass the class that substituting the class you need.
+
+```ts
+import { ReflectiveInjector } from '@ts-stack/di';
+
+import { HTTP_INTERCEPTORS } from './constants';
+import { DefaultInterceptor } from './default.interceptor';
+import { MyInterceptor } from './my.interceptor';
+
+const injector = ReflectiveInjector.resolveAndCreate([
+  { provide: HTTP_INTERCEPTORS, useExisting: DefaultInterceptor, multi: true },
+  DefaultInterceptor,
+  { provide: DefaultInterceptor, useClass: MyInterceptor }
+]);
+
+const locals = injector.get(HTTP_INTERCEPTORS); // [MyInterceptor]
 ```
+
+This construction makes sense, for example, if the first two points are performed somewhere in an external module to which you do not have access to edit, and the third point is performed by the user of this module.

@@ -426,3 +426,29 @@ const child = parent.resolveAndCreateChild([
 
 const locals = child.get(LOCAL); // ['аа']
 ```
+
+### Підміна мультипровайдерів
+
+Щоб стала можливою підміна конкретного мультипровайдера, можна зробити так:
+
+1. спочатку передавайте мультипровайдер та використовуйте властивість `useExisting`;
+2. потім передавайте клас який ви хочете підмінити;
+3. ну і в кінець масиву передавайте клас, який підмінює потрібний вам клас.
+
+```ts
+import { ReflectiveInjector } from '@ts-stack/di';
+
+import { HTTP_INTERCEPTORS } from './constants';
+import { DefaultInterceptor } from './default.interceptor';
+import { MyInterceptor } from './my.interceptor';
+
+const injector = ReflectiveInjector.resolveAndCreate([
+  { provide: HTTP_INTERCEPTORS, useExisting: DefaultInterceptor, multi: true },
+  DefaultInterceptor,
+  { provide: DefaultInterceptor, useClass: MyInterceptor }
+]);
+
+const locals = injector.get(HTTP_INTERCEPTORS); // [MyInterceptor]
+```
+
+Така конструкція має сенс, наприклад, якщо перші два пункти виконуються десь у зовнішньому модулі, до якого у вас немає доступу на редагування, а третій пункт виконує вже користувач цього модуля.
