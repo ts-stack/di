@@ -63,7 +63,7 @@ In this case, you may not know the whole chain of dependencies `Service3`, entru
 
 ## Prerequisites for `@ts-stack/di`
 
-From the point of view of the JavaScript developer, the fact that DI can somehow view class constructors and see there other classes - this can be called magic at the moment. And this magic is provided by the following necessary prerequisites of work of this library:
+From the point of view of the JavaScript developer, the fact that DI can somehow view class constructors and see there other classes - this can be called magic. And this magic is provided by the following necessary prerequisites of work of this library:
 
 1. In your project, in the file `tsconfig.json` it is necessary to allow to use decorators:
 
@@ -107,9 +107,9 @@ const service3 = injector.get(Service3);
 service3 === injector.get(Service3); // true
 ```
 
-Now `Service2` is not dependent on `Service1`, and when creating an instance of `Service3`, the injector will also create an instance of class `Service2`, but will not create an instance of class `Service1`, because it has not been requested and does not depend on it other classes. On the other hand, all already created instances will be stored in the injector itself and returned upon repeated requests. That is, a specific injector creates an instance of a certain class only once, but only after this instance is requested.
+Now `Service2` is not dependent on `Service1`, and when creating an instance of `Service3`, the injector will also create an instance of class `Service2`, but will not create an instance of class `Service1`, because it has not been requested and does not depend on it other classes. On the other hand, all already created instances will be stored in the injector itself and returned upon repeated requests. That is, a specific injector creates an instance of a specific class using `injector.get()` only once, but only after that instance is requested.
 
-It turns out that if you need to do more instances of certain classes, you need to create new injectors:
+It turns out that if you need to make instances of certain classes more often using `injector.get()`, you need to create new injectors:
 
 ```ts
 import { ReflectiveInjector } from '@ts-stack/di';
@@ -124,6 +124,14 @@ const injector1 = ReflectiveInjector.resolveAndCreate(services);
 const injector2 = ReflectiveInjector.resolveAndCreate(services);
 
 injector1.get(Service2) === injector2.get(Service2); // false
+```
+
+There is another way to get a new instance of a certain class each time:
+
+```ts
+//..
+
+injector1.resolveAndInstantiate(Service2) === injector1.resolveAndInstantiate(Service2); // false
 ```
 
 ## Hierarchy of injectors
